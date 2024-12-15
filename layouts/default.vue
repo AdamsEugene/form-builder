@@ -257,7 +257,7 @@ import { ref } from "vue";
 const route = useRoute();
 
 const isDarkMode = ref(false);
-const isCollapsed = ref(false);
+const isCollapsed = ref(true);
 
 const favorites = [
   { name: "Customer Feedback" },

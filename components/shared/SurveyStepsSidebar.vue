@@ -1,7 +1,7 @@
 <!-- components/SurveyStepsSidebar.vue -->
 <template>
   <div
-    :class="`h-[calc(100vh-102px)] bg-sidebar-gradient border-l border-purple-100/20 shadow-lg rounded-2xl transition-all duration-300 ease-in-out overflow-hidden ${
+    :class="`h-[calc(100vh-104px)] bg-sidebar-gradient border-l border-purple-100/20 shadow-lg rounded-2xl transition-all duration-300 ease-in-out overflow-hidden ${
       isCollapsed ? 'w-20' : 'w-64'
     }`"
   >
@@ -126,7 +126,13 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-const isCollapsed = ref(false);
+interface EmitEvents {
+  (e: "stepChange", index: number): void;
+}
+
+const emit = defineEmits<EmitEvents>();
+
+const isCollapsed = ref(true);
 const activeStepIndex = ref(0);
 
 const completedSteps = [
@@ -145,6 +151,7 @@ const upcomingSteps = [
 
 const setActiveStep = (index: number) => {
   activeStepIndex.value = index;
+  emit("stepChange", index);
 };
 
 const toggleSidebar = () => {
