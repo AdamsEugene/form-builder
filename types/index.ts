@@ -40,3 +40,6 @@ export interface ButtonProps extends BaseProps {
 export interface OtherProps extends BaseProps {
   type: "bubble" | "embedded" | "fullScreen" | "link";
 }
+
+
+export type Placement = SidePlacement | PopoverPlacement
