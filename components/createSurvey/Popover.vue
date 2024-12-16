@@ -84,21 +84,3 @@ const handleNext = () => {
         </div>
     </div>
 </template>
-
-<!-- <SurveyRating
-              v-model="rating"
-              :device-type="deviceType"
-              :is-open="isOpen"
-              placement="bottom-right"
-              question="How satisfied are you with our service?"
-              leftLabel="Not satisfied"
-              rightLabel="Very satisfied"
-              :ratings="customRatings"
-              backgroundColor="#F8F9FA"
-              questionColor="#1F2937"
-              emojiBackgroundColor="#4F46E5"
-              emojiHoverColor="#4338CA"
-              emojiActiveColor="#3730A3"
-              nextButtonText="Submit"
-              @next="handleNext"
-            /> -->
