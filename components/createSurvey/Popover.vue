@@ -67,12 +67,14 @@ const handleNext = () => {
                             v-model:isOpen="isOpen"
                             :feedback-type="feedbackType"
                             :placement="configs(feedbackType).placement"
-                            question="How satisfied are you with our service?"
+                            question="Hoyou with our service?"
                             leftLabel="Not satisfied"
                             rightLabel="Very satisfied"
                             :ratings="customRatings"
                             nextButtonText="Submit"
                             @next="handleNext"
+                            background-color=""
+                            
                         />
                     </FeedbackTab>
                     <div
@@ -81,6 +83,7 @@ const handleNext = () => {
                     />
                 </div>
             </SurveyPreview>
+            <div></div>
         </div>
     </div>
 </template>

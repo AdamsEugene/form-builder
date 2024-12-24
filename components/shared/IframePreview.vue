@@ -1,22 +1,35 @@
-// components/IframePreview.vue
 <template>
-    <iframe ref="frameRef" class="w-full border border-gray-200 rounded-lg" :style="{ height: frameHeight + 'px' }" />
+    <!-- Loading Spinner -->
+    <div
+        v-if="isLoading"
+        class="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-gray-800/80 z-10 rounded-lg"
+    >
+        <div
+            class="w-8 h-8 border-4 border-gray-200 dark:border-gray-700 border-t-primary-500 rounded-full animate-spin"
+        />
+    </div>
+    <!-- Iframe -->
+    <iframe ref="frameRef" class="w-full border border-gray-200 rounded-lg" :style="{ height: '560px' }" />
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, type Component } from 'vue';
+import { ref, onMounted, watch, type Component } from 'vue';
 import { createApp, h } from 'vue';
 
 const props = defineProps<{
     component: Component;
+    refresh?: boolean;
 }>();
 
 const frameRef = ref<HTMLIFrameElement | null>(null);
-const frameHeight = ref(300);
+const frameHeight = ref(578);
+const isLoading = ref(false);
 
-onMounted(() => {
+// Function to setup and mount the iframe content
+const setupIframe = () => {
     if (!frameRef.value) return;
     const iframe = frameRef.value;
+    isLoading.value = true;
 
     // Create the initial HTML content with Vue script and custom Tailwind configuration
     const htmlContent = `
@@ -133,6 +146,7 @@ onMounted(() => {
           .form-helper-base {
             @apply mt-1 text-sm text-gray-500 dark:text-gray-400;
           }
+            body {overflow:hidden}
         </style>
       </head>
       <body>
@@ -173,6 +187,22 @@ onMounted(() => {
         if (iframeDocument.body) {
             resizeObserver.observe(iframeDocument.body);
         }
+
+        setTimeout(() => {
+            isLoading.value = false;
+        }, 300);
     };
-});
+};
+
+onMounted(setupIframe);
+
+// Watch for refresh prop changes
+watch(
+    () => props.refresh,
+    (newValue, oldValue) => {
+        if (newValue !== oldValue && newValue === true) {
+            setupIframe();
+        }
+    }
+);
 </script>
