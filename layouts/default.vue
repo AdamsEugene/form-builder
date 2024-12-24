@@ -69,7 +69,35 @@
                                     'text-gray-700': route.path !== `/${item.name.toLowerCase().replace(/\s+/g, '-')}`,
                                 }"
                             >
-                                <!-- ... icon remains the same ... -->
+                                <!-- Icon or letter placeholder -->
+                                <div v-if="item.icon" class="shrink-0">
+                                    <svg
+                                        class="w-5 h-5"
+                                        :class="{
+                                            'text-gray-900':
+                                                route.path === `/${item.name.toLowerCase().replace(/\s+/g, '-')}`,
+                                            'text-gray-500':
+                                                route.path !== `/${item.name.toLowerCase().replace(/\s+/g, '-')}`,
+                                        }"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        v-html="item.icon"
+                                    ></svg>
+                                </div>
+                                <div
+                                    v-else
+                                    class="w-5 h-5 shrink-0 rounded-md flex items-center justify-center text-xs font-medium"
+                                    :class="{
+                                        'bg-purple-100 text-purple-700':
+                                            route.path === `/${item.name.toLowerCase().replace(/\s+/g, '-')}`,
+                                        'bg-gray-100 text-gray-600':
+                                            route.path !== `/${item.name.toLowerCase().replace(/\s+/g, '-')}`,
+                                    }"
+                                >
+                                    {{ getInitials(item.name) }}
+                                </div>
+                                <!-- Rest of the link content -->
                                 <span
                                     :class="`ml-3 transition-opacity duration-300 truncate ${
                                         isCollapsed ? 'opacity-0 hidden' : 'opacity-100'
@@ -220,20 +248,30 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 const route = useRoute();
+const { $global } = useNuxtApp();
 
 const isDarkMode = ref(false);
-const isCollapsed = ref(true);
+const isCollapsed = $global.isCollapsed;
 
-const favorites = [
-    { name: 'Customer Feedback' },
-    { name: 'NPS Survey' },
-    { name: 'User Research' },
-    { name: 'Exit Intent' },
-];
+const favorites: {
+    name: string;
+    icon?: string;
+}[] = [{ name: 'Customer Feedback' }, { name: 'NPS Survey' }, { name: 'User Research' }, { name: 'Exit Intent' }];
 
 const handleExtensionClick = () => {
     // Handle extension installation or redirect
     console.log('Extension button clicked');
+};
+
+const getInitials = (name: string): string => {
+    // Split the name into words and get first two words
+    const words = name.split(' ');
+    if (words.length === 1) {
+        // If single word, take first two letters
+        return name.slice(0, 2).toUpperCase();
+    }
+    // If multiple words, take first letter of first two words
+    return (words[0][0] + (words[1] ? words[1][0] : '')).toUpperCase();
 };
 
 const mainMenu = [
@@ -275,7 +313,8 @@ const settingsMenu = [
     },
 ];
 
-const toggleSidebar = () => {
-    isCollapsed.value = !isCollapsed.value;
+const toggleSidebar = async () => {
+    await $global.toggleSidebar();
+    if (!isCollapsed.value) await $global.updateMiniSidebarState(true);
 };
 </script>

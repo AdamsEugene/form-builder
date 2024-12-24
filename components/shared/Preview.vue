@@ -3,9 +3,11 @@ import SurveyRating from '../shared/SurveyRating.vue';
 import type { FeedbackTab as FBT, Placement } from '~/types';
 import FeedbackTab from '../shared/FeedbackTab.vue';
 
+const { survey } = useGlobal();
+
 const rating = ref<number>(0);
 const deviceType = ref<'mobile' | 'desktop' | 'tablet'>('desktop');
-const feedbackType = ref<FBT>('popover');
+const feedbackType = ref<FBT>(survey.value?.type || 'popover');
 const isOpen = ref(true);
 
 const customRatings = [
@@ -33,14 +35,16 @@ const configs = (type: FBT): { placement: Placement } => {
     }
 };
 
-const handleRefresh = () => {
-    // Handle refresh
-    console.log('Refreshing preview...');
-};
-
 const handleNext = () => {
     console.log('Selected rating:', rating.value);
 };
+
+watch(
+    () => survey.value?.type,
+    (newType) => {
+        if (newType) feedbackType.value = newType;
+    }
+);
 </script>
 
 <template>

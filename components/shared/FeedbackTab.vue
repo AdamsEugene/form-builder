@@ -99,7 +99,7 @@ const containerStyles = computed<CSSProperties>(() => {
         ...flexDirection,
         ...centerItem,
         display: 'flex',
-        zIndex: 40,
+        zIndex: 99,
     };
 });
 

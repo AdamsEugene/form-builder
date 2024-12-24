@@ -1,3 +1,8 @@
+<script setup lang="ts"></script>
+
 <template>
-  <h1>pop</h1>
+    <div class="flex flex-col gap-8">
+        <UiBaseButton size="md">Done</UiBaseButton>
+        <!-- <Preview /> -->
+    </div>
 </template>
