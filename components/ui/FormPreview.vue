@@ -52,7 +52,7 @@ watch(
     <div class="relative">
         <iframe
             ref="previewFrame"
-            class="w-full h-[500px] border border-gray-200 rounded-lg z-50 bg-slate-50"
+            class="w-full h-[500px] border border-gray-200 rounded-2xl z-50 bg-slate-50"
             :srcdoc="html"
             sandbox="allow-forms allow-scripts"
             title="Component Preview"

@@ -10,7 +10,7 @@
                 >
                     <!-- Logo Area -->
                     <NuxtLink to="/" class="flex items-center h-16 px-4 mb-6 cursor-pointer">
-                        <div class="bg-black rounded-lg p-2 shrink-0">
+                        <div class="bg-black rounded-2xl p-2 shrink-0">
                             <svg class="w-6 h-6 text-yellow-400" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M13 10V3L4 14h7v7l9-11h-7z" />
                             </svg>
@@ -30,7 +30,7 @@
                             <input
                                 type="text"
                                 placeholder="Search surveys..."
-                                class="w-full px-3 py-2 text-sm bg-white/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-100/20"
+                                class="w-full px-3 py-2 text-sm bg-white/50 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-100/20"
                             />
                             <svg
                                 class="w-4 h-4 absolute right-3 top-2.5 text-gray-500"
@@ -61,7 +61,7 @@
                                 v-for="item in favorites"
                                 :key="item.name"
                                 :to="`/${item.name.toLowerCase().replace(/\s+/g, '-')}`"
-                                class="flex items-center px-3 py-2 text-sm hover:bg-white/50 rounded-lg cursor-pointer"
+                                class="flex items-center px-3 py-2 text-sm hover:bg-white/50 rounded-2xl cursor-pointer"
                                 :class="{
                                     'justify-center': isCollapsed,
                                     'bg-white text-gray-900':
@@ -87,7 +87,7 @@
                                 </div>
                                 <div
                                     v-else
-                                    class="w-5 h-5 shrink-0 rounded-md flex items-center justify-center text-xs font-medium"
+                                    class="w-5 h-5 shrink-0 rounded-2xl flex items-center justify-center text-xs font-medium"
                                     :class="{
                                         'bg-purple-100 text-purple-700':
                                             route.path === `/${item.name.toLowerCase().replace(/\s+/g, '-')}`,
@@ -123,7 +123,7 @@
                                 v-for="item in mainMenu"
                                 :key="item.name"
                                 :to="`/${item.name.toLowerCase().replace(/\s+/g, '-')}`"
-                                class="flex items-center px-3 py-2 text-sm hover:bg-white/50 rounded-lg cursor-pointer"
+                                class="flex items-center px-3 py-2 text-sm hover:bg-white/50 rounded-2xl cursor-pointer"
                                 :class="{
                                     'justify-center': isCollapsed,
                                     'bg-white text-gray-900':
@@ -162,7 +162,7 @@
                                 v-for="item in settingsMenu"
                                 :key="item.name"
                                 :to="`/${item.name.toLowerCase().replace(/\s+/g, '-')}`"
-                                class="flex items-center px-3 py-2 text-sm hover:bg-white/50 rounded-lg cursor-pointer"
+                                class="flex items-center px-3 py-2 text-sm hover:bg-white/50 rounded-2xl cursor-pointer"
                                 :class="{
                                     'justify-center': isCollapsed,
                                     'bg-white text-gray-900':
@@ -197,11 +197,11 @@
                     <!-- Extension Button -->
                     <div class="absolute bottom-4 left-4 right-4">
                         <div
-                            class="cursor-pointer bg-[#E7F9EF] rounded-lg p-3 flex items-center transition-opacity duration-300"
+                            class="cursor-pointer bg-[#E7F9EF] rounded-2xl p-3 flex items-center transition-opacity duration-300"
                             :class="isCollapsed ? 'opacity-0' : 'opacity-100'"
                             @click="handleExtensionClick"
                         >
-                            <div class="bg-white rounded-lg p-1.5 shrink-0">
+                            <div class="bg-white rounded-2xl p-1.5 shrink-0">
                                 <svg class="w-5 h-5 text-green-600" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>

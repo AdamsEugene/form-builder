@@ -1,6 +1,5 @@
 // types/survey.ts
 
-import type { LucideIcon } from 'lucide-vue-next';
 import {
     ThumbsUp,
     MessageSquare,

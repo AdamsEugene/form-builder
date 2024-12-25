@@ -10,7 +10,7 @@ import Targeting from '~/components/createSurvey/Targeting.vue';
 import Preview from '~/components/shared/Preview.vue';
 import SurveyStepsSidebar from '~/components/shared/SurveyStepsSidebar.vue';
 
-const activeStep = ref(0);
+const { currentIndex } = useGlobal();
 
 const deviceType = ref<'mobile' | 'desktop' | 'tablet'>('desktop');
 const shouldRefresh = ref(false);
@@ -23,12 +23,8 @@ const handleRefresh = () => {
     }, 100);
 };
 
-const handleStepChange = (index: number) => {
-    activeStep.value = index;
-};
-
 const getStepComponent = computed(() => {
-    switch (activeStep.value) {
+    switch (currentIndex.value) {
         case 0:
             return Details;
         case 1:
@@ -55,7 +51,7 @@ const getStepComponent = computed(() => {
     <div class="flex gap-6">
         <div>
             <div class="sticky top-0">
-                <SurveyStepsSidebar v-if="true" @step-change="handleStepChange" />
+                <SurveyStepsSidebar v-if="true" />
             </div>
         </div>
         <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2 w-full">

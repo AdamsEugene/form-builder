@@ -35,7 +35,7 @@ const isActiveDevice = (type: DeviceType) => deviceType.value === type;
             <button
                 type="button"
                 @click="handleRefresh"
-                class="p-2 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-800"
+                class="p-2 text-gray-500 hover:text-gray-700 rounded-2xl hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-800"
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -55,7 +55,7 @@ const isActiveDevice = (type: DeviceType) => deviceType.value === type;
             </button>
 
             <!-- Device Toggle -->
-            <div class="bg-gray-100 rounded-lg p-1 flex gap-1 dark:bg-gray-800">
+            <div class="bg-gray-100 rounded-2xl p-1 flex gap-1 dark:bg-gray-800">
                 <button
                     type="button"
                     @click="toggleDevice('desktop')"
@@ -86,11 +86,11 @@ const isActiveDevice = (type: DeviceType) => deviceType.value === type;
 
         <!-- Preview Window -->
         <div
-            class="bg-gray-50 border border-gray-200 h-[calc(100vh-220px)] rounded-lg p-8 dark:bg-gray-900/50 dark:border-gray-700"
+            class="bg-gray-50 border border-gray-200 h-[calc(100vh-220px)] rounded-2xl p-8 dark:bg-gray-900/50 dark:border-gray-700"
         >
             <div
                 :class="[
-                    'mx-auto bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden dark:bg-gray-800 dark:border-gray-700',
+                    'mx-auto bg-white border border-gray-200 shadow-lg rounded-2xl overflow-hidden dark:bg-gray-800 dark:border-gray-700',
                     deviceType === 'desktop' ? 'max-w-4xl h-[580px]' : 'w-[320px] h-[640px]',
                 ]"
             >

@@ -2,17 +2,20 @@
 const selectedOption = ref<string | number | null>(null);
 
 import { QuestionType, questionTypes, ReactionType, type Question } from '~/types/survey';
-import { Plus } from 'lucide-vue-next';
+import { Plus, BrainCog, ArrowRight } from 'lucide-vue-next';
 
 const INITIAL_QUESTION: Question = {
     id: crypto.randomUUID(),
     type: QuestionType.REACTION,
-    title: '',
+    title: 'asa',
     required: false,
     reactionType: ReactionType.SMILEYS,
     logic: {
-        nextQuestion: null,
+        nextQuestion: 'Thank you message',
     },
+    highScoreLabel: 'Very satisfied',
+    lowScoreLabel: 'Not satisfied',
+    image: { height: 20, width: 20, url: '' },
 };
 
 const questions = ref<Question[]>([INITIAL_QUESTION]);
@@ -52,7 +55,11 @@ const handleChange = (option: any) => {
 <template>
     <div class="flex flex-col gap-8">
         <div class="grid grid-cols-3 gap-4 w-full">
-            <UiBaseButton size="md" class="col-span-1">Add question</UiBaseButton>
+            <UiBaseButton @click="addQuestion" class="gap-2">
+                <Plus class="w-6 h-6" />
+                Add question
+                <BrainCog class="w-6 h-6" />
+            </UiBaseButton>
             <UiBaseDropdown
                 v-model="selectedOption"
                 :options="questionTypes"
@@ -76,15 +83,16 @@ const handleChange = (option: any) => {
 
         <div class="flex gap-2">
             <UiBaseButton @click="addQuestion" class="gap-2">
-                <Plus class="w-4 h-4" />
+                <Plus class="w-6 h-6" />
                 Add question
+                <BrainCog class="w-6 h-6" />
             </UiBaseButton>
             <UiBaseButton variant="outline">
                 <div class="flex items-center gap-1">More options</div>
             </UiBaseButton>
         </div>
 
-        <UiBaseButton size="md" data-question>Done</UiBaseButton>
+        <UiBaseButton size="md">Next <ArrowRight /></UiBaseButton>
     </div>
 </template>
 

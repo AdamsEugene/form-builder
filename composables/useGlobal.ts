@@ -4,6 +4,7 @@ import type { GlobalState, Survey } from '~/types';
 export const useGlobal = () => {
     const isCollapsed = useState('global-collapsed', () => false);
     const isMiniCollapsed = useState('global-mini-collapsed', () => false);
+    const currentIndex = useState('current-index', () => 0);
     const survey = useState<Survey | null>('survey-data', () => null);
 
     // Initialize state from IndexedDB
@@ -14,6 +15,7 @@ export const useGlobal = () => {
             if (savedState) {
                 isCollapsed.value = savedState.sidebarCollapsed ?? false;
                 isMiniCollapsed.value = savedState.miniSidebarCollapsed ?? false;
+                currentIndex.value = savedState.currentIndex ?? 0;
                 survey.value = savedState.surveyData ?? null;
             }
         } catch (err) {
@@ -29,6 +31,7 @@ export const useGlobal = () => {
             const currentState: GlobalState = {
                 sidebarCollapsed: isCollapsed.value,
                 miniSidebarCollapsed: isMiniCollapsed.value,
+                currentIndex: currentIndex.value,
                 surveyData: survey.value ? toRaw(survey.value) : null,
             };
             await globalStore.setValue('general', currentState);
@@ -51,6 +54,10 @@ export const useGlobal = () => {
 
     const updateMiniSidebarState = async (state: boolean) => {
         isMiniCollapsed.value = state;
+    };
+
+    const updateCurrentIndex = async (index: number) => {
+        currentIndex.value = index;
     };
 
     const setSurvey = (data: Partial<Survey> | null) => {
@@ -77,19 +84,21 @@ export const useGlobal = () => {
     };
 
     // Watch for any state changes and save to IndexedDB
-    watch([isCollapsed, survey], async () => {
+    watch([isCollapsed, isMiniCollapsed, survey, currentIndex], async () => {
         await saveState();
     });
 
     return {
         isCollapsed: readonly(isCollapsed),
         isMiniCollapsed: readonly(isMiniCollapsed),
+        currentIndex: readonly(currentIndex),
         survey: readonly(survey),
         toggleSidebar,
         toggleMiniSidebar,
         setSurvey,
         updateSidebarState,
         updateMiniSidebarState,
+        updateCurrentIndex,
         clearStorage,
     };
 };

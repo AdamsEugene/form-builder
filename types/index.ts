@@ -42,4 +42,5 @@ export interface GlobalState {
     sidebarCollapsed: boolean;
     miniSidebarCollapsed: boolean;
     surveyData: Survey | null;
+    currentIndex: number;
 }

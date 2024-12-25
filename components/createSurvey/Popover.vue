@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import BaseButton from '../ui/BaseButton.vue';
 import type { FeedbackTab } from '~/types';
+import { ArrowRight } from 'lucide-vue-next';
 
 interface SurveyType {
     id: FeedbackTab;
@@ -79,7 +80,7 @@ watch(
                     :key="type.id"
                     @click="handleTypeSelect(type.id)"
                     :class="[
-                        'relative p-4 rounded-lg border-2 text-left transition-all duration-200',
+                        'relative p-4 rounded-2xl border-2 text-left transition-all duration-200',
                         'hover:border-primary-300 hover:bg-primary-50 dark:hover:bg-primary-900/10',
                         selectedType === type.id
                             ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/10 dark:border-primary-400'
@@ -97,7 +98,7 @@ watch(
                     <div class="flex items-start gap-3">
                         <!-- Icon -->
                         <div
-                            class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800"
+                            class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-2xl bg-gray-100 dark:bg-gray-800"
                         >
                             <span class="text-xl">{{ type.icon }}</span>
                         </div>
@@ -116,11 +117,11 @@ watch(
                     <!-- Selected indicator -->
                     <div
                         v-if="selectedType === type.id"
-                        class="absolute inset-0 border-2 border-primary-500 dark:border-primary-400 rounded-lg pointer-events-none"
+                        class="absolute inset-0 border-2 border-primary-500 dark:border-primary-400 rounded-2xl pointer-events-none"
                     />
                 </button>
             </div>
         </div>
-        <BaseButton size="md">Done</BaseButton>
+        <BaseButton size="md">Next <ArrowRight /></BaseButton>
     </div>
 </template>

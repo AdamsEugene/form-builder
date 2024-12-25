@@ -36,7 +36,7 @@ const isBusinessFeature = computed(() => {
 
 <template>
     <div
-        class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg"
+        class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg"
     >
         <!-- Question Header -->
         <div class="flex items-center justify-between mb-4">
@@ -60,10 +60,7 @@ const isBusinessFeature = computed(() => {
                 placeholder="Select question type"
             />
             <div class="flex items-center">
-                <label class="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" v-model="question.required" class="form-checkbox" />
-                    <span class="text-sm text-gray-700 dark:text-gray-200">Required</span>
-                </label>
+                <UiBaseCheckbox v-model="question.required" label="Required" size="lg" />
             </div>
         </div>
 
@@ -87,7 +84,7 @@ const isBusinessFeature = computed(() => {
                 <button
                     v-for="type in reactionTypes"
                     :key="type.id"
-                    class="px-3 py-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2"
+                    class="px-3 py-1.5 rounded-2xl border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2"
                     :class="{ 'border-primary-500': question.reactionType === type.id }"
                     @click="question.reactionType = type.id"
                 >

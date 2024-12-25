@@ -2,18 +2,13 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 
-const { survey, isMiniCollapsed, toggleMiniSidebar, updateSidebarState } = useGlobal();
+const { survey, isMiniCollapsed, toggleMiniSidebar, updateSidebarState, currentIndex, updateCurrentIndex } =
+    useGlobal();
 
 const selectedType = ref(survey.value?.type);
 
-interface EmitEvents {
-    (e: 'stepChange', index: number): void;
-}
-
-const emit = defineEmits<EmitEvents>();
-
 const isCollapsed = isMiniCollapsed;
-const activeStepIndex = ref(0);
+const activeStepIndex = ref(currentIndex.value);
 
 // Convert to computed property to react to selectedType changes
 const completedSteps = computed(() => [
@@ -31,8 +26,8 @@ const upcomingSteps = [
 ];
 
 const setActiveStep = (index: number) => {
+    updateCurrentIndex(index);
     activeStepIndex.value = index;
-    emit('stepChange', index);
 };
 
 const toggleSidebar = async () => {
@@ -44,6 +39,13 @@ watch(
     () => survey.value?.type,
     (newType) => {
         selectedType.value = newType;
+    }
+);
+
+watch(
+    () => currentIndex.value,
+    (newIndex) => {
+        activeStepIndex.value = newIndex;
     }
 );
 </script>
@@ -74,7 +76,7 @@ watch(
                         v-for="(item, index) in completedSteps"
                         :key="item.name"
                         @click="setActiveStep(index)"
-                        class="flex items-center px-3 py-2 text-sm hover:bg-white/50 rounded-lg cursor-pointer"
+                        class="flex items-center px-3 py-2 text-sm hover:bg-white/50 rounded-2xl cursor-pointer"
                         :class="{
                             'justify-center': isCollapsed,
                             'bg-white': activeStepIndex === index,
@@ -101,7 +103,7 @@ watch(
                         v-for="(item, index) in upcomingSteps"
                         :key="item.name"
                         @click="setActiveStep(index + completedSteps.length)"
-                        class="flex items-center px-3 py-2 text-sm hover:bg-white/50 rounded-lg cursor-pointer"
+                        class="flex items-center px-3 py-2 text-sm hover:bg-white/50 rounded-2xl cursor-pointer"
                         :class="{
                             'justify-center': isCollapsed,
                             'bg-white': activeStepIndex === index + completedSteps.length,

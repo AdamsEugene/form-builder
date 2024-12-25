@@ -118,7 +118,7 @@ onUnmounted(() => {
             :id="name"
             :disabled="disabled"
             @click="isOpen = !isOpen"
-            class="relative w-full rounded-lg py-2.5 pl-3 pr-10 text-left border focus:outline-none focus:ring-2 focus:ring-primary-500"
+            class="relative w-full rounded-2xl py-2.5 pl-3 pr-10 text-left border focus:outline-none focus:ring-2 focus:ring-primary-500"
             :class="[
                 error ? 'border-error-light' : 'border-gray-300 dark:border-gray-600',
                 disabled
@@ -149,7 +149,7 @@ onUnmounted(() => {
         <!-- Dropdown menu -->
         <div
             v-if="isOpen"
-            class="absolute z-10 mt-1 w-full overflow-hidden rounded-lg bg-light-background dark:bg-dark-background shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+            class="absolute z-10 mt-1 w-full overflow-hidden rounded-2xl bg-light-background dark:bg-dark-background shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
         >
             <!-- Search input -->
             <div
@@ -159,14 +159,14 @@ onUnmounted(() => {
                 <input
                     v-model="searchQuery"
                     type="search"
-                    class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-light-background dark:bg-dark-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    class="w-full rounded-2xl border border-gray-300 dark:border-gray-600 bg-light-background dark:bg-dark-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
                     placeholder="Search options..."
                     @click.stop
                 />
             </div>
 
             <!-- Options container -->
-            <div class="max-h-80 overflow-y-auto">
+            <div class="max-h-80 overflow-y-auto p-2 space-y-2">
                 <!-- Loading state -->
                 <div v-if="loading" class="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">Loading...</div>
 
@@ -185,7 +185,7 @@ onUnmounted(() => {
                         :key="option.id"
                         @click="handleSelect(option)"
                         :disabled="option.disabled"
-                        class="relative w-full select-none px-3 py-2 text-left focus:outline-none"
+                        class="relative w-full select-none px-3 py-2 text-left focus:outline-none rounded-2xl"
                         :class="[
                             activeIndex === index ? 'bg-primary-100 dark:bg-primary-900/50' : '',
                             option.disabled

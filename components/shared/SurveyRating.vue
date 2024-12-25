@@ -182,7 +182,7 @@ const handleClick = () => {
                     class="cursor-pointer transition-all duration-200 hover:scale-110"
                 >
                     <div
-                        class="w-12 h-12 flex items-center justify-center rounded-md text-2xl transition-colors duration-200"
+                        class="w-12 h-12 flex items-center justify-center rounded-2xl text-2xl transition-colors duration-200"
                         :class="{
                             'transform scale-110': modelValue === rating.value,
                         }"
@@ -204,7 +204,7 @@ const handleClick = () => {
                 <button
                     @click="handleNext"
                     :disabled="nextButtonDisabled || !modelValue"
-                    class="px-4 py-2 rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="px-4 py-2 rounded-2xl transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     :style="{
                         backgroundColor: nextButtonBgColor,
                         color: nextButtonTextColor,
