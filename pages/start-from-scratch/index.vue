@@ -54,11 +54,13 @@ const getStepComponent = computed(() => {
 <template>
     <div class="flex gap-6">
         <div>
-            <SurveyStepsSidebar v-if="true" @step-change="handleStepChange" />
+            <div class="sticky top-0">
+                <SurveyStepsSidebar v-if="true" @step-change="handleStepChange" />
+            </div>
         </div>
         <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2 w-full">
             <div class="w-full">
-                <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Collect feedback</h1>
+                <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Start from scratch</h1>
 
                 <transition
                     mode="out-in"
@@ -75,9 +77,11 @@ const getStepComponent = computed(() => {
                 </transition>
             </div>
             <div class="flex flex-col gap-8">
-                <SharedSurveyPreview v-model:deviceType="deviceType" @refresh="handleRefresh">
-                    <SharedIframePreview :component="Preview" :refresh="shouldRefresh" />
-                </SharedSurveyPreview>
+                <div class="sticky top-6">
+                    <SharedSurveyPreview v-model:deviceType="deviceType" @refresh="handleRefresh">
+                        <SharedIframePreview :component="Preview" :refresh="shouldRefresh" />
+                    </SharedSurveyPreview>
+                </div>
             </div>
         </div>
     </div>

@@ -1,5 +1,5 @@
 <template>
-    <div :class="{ dark: isDarkMode }">
+    <div class="scrollbar-thin scrollbar-thin-auto" :class="{ dark: isDarkMode }">
         <div class="min-h-screen bg-brand-primary">
             <div class="flex">
                 <!-- Sidebar -->
@@ -236,7 +236,7 @@
                     } flex-1 px-6 py-4`"
                 >
                     <TopBar />
-                    <div class="mt-2">
+                    <div class="mt-2 scrollbar-thin scrollbar-thin-auto h-[calc(100vh-104px)] overflow-auto">
                         <slot />
                     </div>
                 </div>

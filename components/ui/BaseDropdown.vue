@@ -1,9 +1,11 @@
 // components/BaseDropdown.vue
 <script setup lang="ts">
+import type { LucideIcon } from 'lucide-vue-next';
+
 interface Option {
     id: string | number;
     label: string;
-    icon?: string;
+    icon?: LucideIcon;
     disabled?: boolean;
     description?: string;
 }
@@ -41,13 +43,12 @@ const searchQuery = ref('');
 const activeIndex = ref(-1);
 
 const selectedOption = computed(() => {
-    return props.options.find((option) => option.id === props.modelValue);
+    return props.options?.find((option) => option.id === props.modelValue);
 });
 
 const filteredOptions = computed(() => {
     if (!searchQuery.value) return props.options;
-
-    return props.options.filter((option) => option.label.toLowerCase().includes(searchQuery.value.toLowerCase()));
+    return props.options?.filter((option) => option.label.toLowerCase().includes(searchQuery.value.toLowerCase()));
 });
 
 const handleSelect = (option: Option) => {
@@ -90,12 +91,10 @@ const handleKeyDown = (e: KeyboardEvent) => {
     }
 };
 
-// Reset active index when options change
 watch(filteredOptions, () => {
     activeIndex.value = -1;
 });
 
-// Add keyboard event listeners
 onMounted(() => {
     document.addEventListener('keydown', handleKeyDown);
 });
@@ -107,26 +106,36 @@ onUnmounted(() => {
 
 <template>
     <div v-click-outside="handleClickOutside" class="relative w-full">
-        <!-- Label - unchanged -->
-        <label v-if="label" :for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+        <!-- Label -->
+        <label v-if="label" :for="name" class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">
             {{ label }}
-            <span v-if="required" class="text-red-500">*</span>
+            <span v-if="required" class="text-error-light dark:text-error-light">*</span>
         </label>
 
-        <!-- Dropdown button - unchanged -->
+        <!-- Dropdown button -->
         <button
             type="button"
             :id="name"
             :disabled="disabled"
             @click="isOpen = !isOpen"
-            class="relative w-full cursor-default rounded-lg bg-white dark:bg-gray-800 py-2.5 pl-3 pr-10 text-left border dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:bg-gray-100 dark:disabled:bg-gray-900"
-            :class="[error ? 'border-red-500' : 'border-gray-300', disabled ? 'cursor-not-allowed' : 'cursor-pointer']"
+            class="relative w-full rounded-lg py-2.5 pl-3 pr-10 text-left border focus:outline-none focus:ring-2 focus:ring-primary-500"
+            :class="[
+                error ? 'border-error-light' : 'border-gray-300 dark:border-gray-600',
+                disabled
+                    ? 'cursor-not-allowed bg-light-surface dark:bg-dark-surface'
+                    : 'cursor-pointer bg-light-background dark:bg-dark-background hover:bg-light-surface dark:hover:bg-dark-surface',
+            ]"
         >
-            <span class="block truncate">
+            <span class="block truncate text-gray-700 dark:text-gray-200">
                 {{ selectedOption?.label || placeholder }}
             </span>
             <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+                <svg
+                    class="h-5 w-5 text-gray-400 dark:text-gray-500"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    stroke="currentColor"
+                >
                     <path
                         d="M7 7l3-3 3 3m0 6l-3 3-3-3"
                         strokeWidth="1.5"
@@ -137,26 +146,26 @@ onUnmounted(() => {
             </span>
         </button>
 
-        <!-- Dropdown menu - updated with max-height and sticky search -->
+        <!-- Dropdown menu -->
         <div
             v-if="isOpen"
-            class="absolute z-10 mt-1 w-full overflow-hidden rounded-lg bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+            class="absolute z-10 mt-1 w-full overflow-hidden rounded-lg bg-light-background dark:bg-dark-background shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
         >
-            <!-- Sticky search container -->
+            <!-- Search input -->
             <div
                 v-if="searchable"
-                class="sticky top-0 z-10 bg-white dark:bg-gray-800 px-3 py-2 border-b border-gray-200 dark:border-gray-700"
+                class="sticky top-0 z-10 bg-light-background dark:bg-dark-background px-3 py-2 border-b border-gray-200 dark:border-gray-700"
             >
                 <input
                     v-model="searchQuery"
                     type="search"
-                    class="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-light-background dark:bg-dark-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
                     placeholder="Search options..."
                     @click.stop
                 />
             </div>
 
-            <!-- Scrollable content container -->
+            <!-- Options container -->
             <div class="max-h-80 overflow-y-auto">
                 <!-- Loading state -->
                 <div v-if="loading" class="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">Loading...</div>
@@ -176,22 +185,29 @@ onUnmounted(() => {
                         :key="option.id"
                         @click="handleSelect(option)"
                         :disabled="option.disabled"
-                        class="relative w-full cursor-default select-none px-3 py-2 text-left focus:outline-none"
+                        class="relative w-full select-none px-3 py-2 text-left focus:outline-none"
                         :class="[
                             activeIndex === index ? 'bg-primary-100 dark:bg-primary-900/50' : '',
                             option.disabled
                                 ? 'cursor-not-allowed opacity-50'
-                                : 'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700',
+                                : 'cursor-pointer hover:bg-light-surface dark:hover:bg-dark-surface',
                             modelValue === option.id ? 'bg-primary-50 dark:bg-primary-900/30' : '',
                         ]"
                     >
                         <div class="flex items-center">
                             <!-- Option icon -->
-                            <span v-if="option.icon" class="mr-2 text-lg">{{ option.icon }}</span>
+                            <component
+                                v-if="option.icon"
+                                :is="option.icon"
+                                class="mr-2 h-5 w-5 text-gray-500 dark:text-gray-400"
+                            />
 
                             <div>
                                 <!-- Option label -->
-                                <span class="block truncate" :class="{ 'font-medium': modelValue === option.id }">
+                                <span
+                                    class="block truncate text-gray-700 dark:text-gray-200"
+                                    :class="{ 'font-medium': modelValue === option.id }"
+                                >
                                     {{ option.label }}
                                 </span>
 
@@ -224,6 +240,6 @@ onUnmounted(() => {
         </div>
 
         <!-- Error message -->
-        <p v-if="error" class="mt-1 text-sm text-red-500">{{ error }}</p>
+        <p v-if="error" class="mt-1 text-sm text-error-light">{{ error }}</p>
     </div>
 </template>

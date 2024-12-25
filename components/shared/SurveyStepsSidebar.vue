@@ -1,7 +1,56 @@
 <!-- components/SurveyStepsSidebar.vue -->
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+
+const { survey, isMiniCollapsed, toggleMiniSidebar, updateSidebarState } = useGlobal();
+
+const selectedType = ref(survey.value?.type);
+
+interface EmitEvents {
+    (e: 'stepChange', index: number): void;
+}
+
+const emit = defineEmits<EmitEvents>();
+
+const isCollapsed = isMiniCollapsed;
+const activeStepIndex = ref(0);
+
+// Convert to computed property to react to selectedType changes
+const completedSteps = computed(() => [
+    { name: 'Details: New survey' },
+    { name: `Type: ${selectedType.value}` },
+    { name: 'Questions: 2 questions' },
+]);
+
+const upcomingSteps = [
+    { name: 'Appearance' },
+    { name: 'Targeting' },
+    { name: 'Behavior' },
+    { name: 'Forward Response' },
+    { name: 'Summary' },
+];
+
+const setActiveStep = (index: number) => {
+    activeStepIndex.value = index;
+    emit('stepChange', index);
+};
+
+const toggleSidebar = async () => {
+    await toggleMiniSidebar();
+    if (!isCollapsed.value) await updateSidebarState(true);
+};
+
+watch(
+    () => survey.value?.type,
+    (newType) => {
+        selectedType.value = newType;
+    }
+);
+</script>
+
 <template>
     <div
-        :class="`h-[calc(100vh-104px)] bg-sidebar-gradient border-l border-purple-100/20 shadow-lg rounded-2xl transition-all duration-300 ease-in-out overflow-hidden ${
+        :class="`h-[calc(100vh-114px)] bg-sidebar-gradient border-l border-purple-100/20 shadow-lg rounded-2xl transition-all duration-300 ease-in-out overflow-hidden ${
             isCollapsed ? 'w-20' : 'w-64'
         }`"
     >
@@ -97,52 +146,3 @@
         </div>
     </div>
 </template>
-
-<script setup lang="ts">
-import { ref, computed } from 'vue';
-
-const { survey, isMiniCollapsed, toggleMiniSidebar, updateSidebarState } = useGlobal();
-
-const selectedType = ref(survey.value?.type);
-
-interface EmitEvents {
-    (e: 'stepChange', index: number): void;
-}
-
-const emit = defineEmits<EmitEvents>();
-
-const isCollapsed = isMiniCollapsed;
-const activeStepIndex = ref(0);
-
-// Convert to computed property to react to selectedType changes
-const completedSteps = computed(() => [
-    { name: 'Details: New survey' },
-    { name: `Type: ${selectedType.value}` },
-    { name: 'Questions: 2 questions' },
-]);
-
-const upcomingSteps = [
-    { name: 'Appearance' },
-    { name: 'Targeting' },
-    { name: 'Behavior' },
-    { name: 'Forward Response' },
-    { name: 'Summary' },
-];
-
-const setActiveStep = (index: number) => {
-    activeStepIndex.value = index;
-    emit('stepChange', index);
-};
-
-const toggleSidebar = async () => {
-    await toggleMiniSidebar();
-    if (!isCollapsed.value) await updateSidebarState(true);
-};
-
-watch(
-    () => survey.value?.type,
-    (newType) => {
-        selectedType.value = newType;
-    }
-);
-</script>

@@ -1,56 +1,48 @@
 <script setup lang="ts">
 const selectedOption = ref<string | number | null>(null);
 
-const questionTypes = [
-    {
-        id: 'reaction',
-        label: 'Reaction',
-        icon: '👍',
-        description: 'Simple reaction feedback',
+import { QuestionType, questionTypes, ReactionType, type Question } from '~/types/survey';
+import { Plus } from 'lucide-vue-next';
+
+const INITIAL_QUESTION: Question = {
+    id: crypto.randomUUID(),
+    type: QuestionType.REACTION,
+    title: '',
+    required: false,
+    reactionType: ReactionType.SMILEYS,
+    logic: {
+        nextQuestion: null,
     },
-    {
-        id: 'short_text',
-        label: 'Short text answer',
-        icon: '✍️',
-        description: 'Brief text response',
-    },
-    {
-        id: 'long_text',
-        label: 'Long text answer',
-        icon: '📝',
-        description: 'Detailed text response',
-    },
-    {
-        id: 'email',
-        label: 'Email',
-        icon: '📧',
-        description: 'Collect email addresses',
-    },
-    {
-        id: 'yes_no',
-        label: 'Yes / No',
-        icon: '✅',
-        description: 'Binary choice question',
-    },
-    {
-        id: 'radio',
-        label: 'Radio options',
-        icon: '⭕',
-        description: 'Single choice from multiple options',
-    },
-    {
-        id: 'checkbox',
-        label: 'Checkbox options',
-        icon: '☑️',
-        description: 'Multiple choice selection',
-    },
-    {
-        id: 'rating_5',
-        label: '1 - 5 Rating scale',
-        icon: '⭐',
-        description: 'Five-point rating scale',
-    },
-];
+};
+
+const questions = ref<Question[]>([INITIAL_QUESTION]);
+const questionsContainer = ref<HTMLElement | null>(null);
+const lastAddedQuestion = ref<Element | ComponentPublicInstance | null>(null);
+
+const addQuestion = () => {
+    const newQuestion = {
+        ...INITIAL_QUESTION,
+        id: crypto.randomUUID(),
+    };
+    questions.value.push(newQuestion);
+
+    // Wait for DOM to update
+    nextTick(() => {
+        // Get the last question element
+        const elements = document.querySelectorAll('[data-question]');
+        const lastElement = elements[elements.length - 1];
+        if (lastElement) {
+            lastElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+            });
+        }
+    });
+};
+
+const deleteQuestion = (index: number) => {
+    questions.value.splice(index, 1);
+};
 
 const handleChange = (option: any) => {
     console.log('Selected option:', option);
@@ -60,7 +52,7 @@ const handleChange = (option: any) => {
 <template>
     <div class="flex flex-col gap-8">
         <div class="grid grid-cols-3 gap-4 w-full">
-            <UiBaseButton size="md" class="col-span-1">Done</UiBaseButton>
+            <UiBaseButton size="md" class="col-span-1">Add question</UiBaseButton>
             <UiBaseDropdown
                 v-model="selectedOption"
                 :options="questionTypes"
@@ -70,7 +62,50 @@ const handleChange = (option: any) => {
                 class="col-span-2"
             />
         </div>
-        <UiBaseButton size="md">Done</UiBaseButton>
-        <!-- <Preview /> -->
+
+        <TransitionGroup ref="questionsContainer" name="questions" tag="div" class="flex flex-col gap-4">
+            <div
+                v-for="(question, index) in questions"
+                :key="question.id"
+                class="transform transition-all duration-300"
+                :ref="index === questions.length - 1 ? (el) => (lastAddedQuestion = el) : undefined"
+            >
+                <SharedSurveyQuestion v-model="questions[index]" :index="index" @delete="deleteQuestion(index)" />
+            </div>
+        </TransitionGroup>
+
+        <div class="flex gap-2">
+            <UiBaseButton @click="addQuestion" class="gap-2">
+                <Plus class="w-4 h-4" />
+                Add question
+            </UiBaseButton>
+            <UiBaseButton variant="outline">
+                <div class="flex items-center gap-1">More options</div>
+            </UiBaseButton>
+        </div>
+
+        <UiBaseButton size="md" data-question>Done</UiBaseButton>
     </div>
 </template>
+
+<style scoped>
+.questions-move,
+.questions-enter-active,
+.questions-leave-active {
+    transition: all 0.3s ease;
+}
+
+.questions-enter-from {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.questions-leave-to {
+    opacity: 0;
+    transform: translateY(-30px);
+}
+
+.questions-leave-active {
+    position: absolute;
+}
+</style>
