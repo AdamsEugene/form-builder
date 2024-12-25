@@ -38,7 +38,10 @@ const addQuestion = () => {
         ...INITIAL_QUESTION[0],
         id: crypto.randomUUID(),
     };
-    questions.value.push(newQuestion);
+
+    // Insert the new question before the last question (Thank you message)
+    const insertIndex = Math.max(0, questions.value.length - 1);
+    questions.value.splice(insertIndex, 0, newQuestion);
 
     // Wait for DOM to update
     nextTick(() => {
@@ -48,12 +51,11 @@ const addQuestion = () => {
         if (lastElement) {
             lastElement.scrollIntoView({
                 behavior: 'smooth',
-                block: 'nearest',
+                block: 'start',
             });
         }
     });
 };
-
 const deleteQuestion = (index: number) => {
     questions.value.splice(index, 1);
 };
@@ -79,11 +81,12 @@ const handleChange = (option: DropdownOption | null) => {
                     @delete="deleteQuestion(index)"
                     @add-question="addQuestion"
                     @change="handleChange"
+                    data-question
                 />
             </div>
         </TransitionGroup>
 
-        <UiBaseButton size="md" class="w-max self-end" data-question>Next <ArrowRight /></UiBaseButton>
+        <UiBaseButton size="md" class="w-max self-end">Next <ArrowRight /></UiBaseButton>
     </div>
 </template>
 
