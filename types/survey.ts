@@ -55,8 +55,8 @@ interface BaseQuestion {
 interface ReactionQuestion extends BaseQuestion {
     type: QuestionType.REACTION;
     reactionType: ReactionType;
-    lowScoreLabel?: string;
-    highScoreLabel?: string;
+    lowScoreLabel: string;
+    highScoreLabel: string;
     image?: {
         url: string;
         width: number;
@@ -82,8 +82,8 @@ interface ChoiceQuestion extends BaseQuestion {
 // Rating Questions
 interface RatingQuestion extends BaseQuestion {
     type: QuestionType.RATING_5 | QuestionType.RATING_7 | QuestionType.NPS;
-    lowScoreLabel?: string;
-    highScoreLabel?: string;
+    lowScoreLabel: string;
+    highScoreLabel: string;
 }
 
 // Statement Question

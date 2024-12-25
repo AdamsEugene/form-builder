@@ -1,7 +1,7 @@
 <!-- components/SurveyQuestion.vue -->
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { Image, Plus, Trash2 } from 'lucide-vue-next';
+import { Image, MessageCircle, Plus, Trash2 } from 'lucide-vue-next';
 import { QuestionType, questionTypes, ReactionType, type DropdownOption, type Question } from '~/types/survey';
 
 interface Props {
@@ -89,20 +89,7 @@ const isBusinessFeature = computed(() => {
             </div>
 
             <!-- Question Title -->
-            <UiFormTextarea
-                v-if="question.type === QuestionType.LONG_TEXT"
-                v-model="question.title"
-                placeholder="How would you rate your experience?"
-                class=""
-            />
-
-            <!-- Question Title -->
-            <UiFormInput
-                v-if="question.type === QuestionType.REACTION || question.type === QuestionType.SHORT_TEXT"
-                v-model="question.title"
-                placeholder="How would you rate your experience?"
-                class=""
-            />
+            <UiFormInput v-model="question.title" placeholder="How would you rate your experience?" label="" class="" />
 
             <!-- Image Upload -->
             <div class="flex flex-col gap-2">
@@ -115,8 +102,49 @@ const isBusinessFeature = computed(() => {
                 </p>
             </div>
 
+            <!-- Radio and checkbox answers -->
+            <div
+                v-if="question.type === QuestionType.RADIO || question.type === QuestionType.CHECKBOX"
+                class="flex flex-col gap-6"
+            >
+                <div class="flex items-center gap-2 w-full">
+                    <UiFormInput
+                        v-model="question.title"
+                        placeholder="answer here"
+                        label="Answer 1"
+                        label-placement="right"
+                        class="w-full"
+                    />
+                    <UiBaseButton variant="ghost" size="sm" class="" @click="$emit('delete')">
+                        <MessageCircle class="w-4 h-4" />
+                    </UiBaseButton>
+                    <UiBaseButton variant="ghost" size="sm" class="text-red-500" @click="$emit('delete')">
+                        <Trash2 class="w-4 h-4" />
+                    </UiBaseButton>
+                </div>
+                <div class="flex items-center gap-2 w-full">
+                    <UiFormInput
+                        v-model="question.title"
+                        placeholder="answer here"
+                        label="Answer 2"
+                        label-placement="right"
+                        class="w-full"
+                    />
+                    <UiBaseButton variant="ghost" size="sm" class="" @click="$emit('delete')">
+                        <MessageCircle class="w-4 h-4" />
+                    </UiBaseButton>
+                    <UiBaseButton variant="ghost" size="sm" class="text-red-500" @click="$emit('delete')">
+                        <Trash2 class="w-4 h-4" />
+                    </UiBaseButton>
+                </div>
+                <div class="flex items-center gap-4">
+                    <UiBaseButton size="sm" variant="outline"><Plus class="w-6 h-6" />Add answer</UiBaseButton>
+                    <UiBaseCheckbox v-model="question.required" label="Randomized" size="lg" />
+                </div>
+            </div>
+
             <!-- Reaction Type Selection (for reaction questions) -->
-            <div v-if="question.type === 'reaction'" class="flex flex-col gap-6">
+            <div v-if="question.type === QuestionType.REACTION" class="flex flex-col gap-6">
                 <div class="flex flex-wrap gap-2">
                     <button
                         v-for="type in reactionTypes"
@@ -135,23 +163,39 @@ const isBusinessFeature = computed(() => {
                         </span>
                     </button>
                 </div>
-
-                <!-- Score Labels -->
-                <div v-if="question.lowScoreLabel && question.highScoreLabel" class="flex flex-col gap-6">
-                    <UiFormInput
-                        v-model="question.lowScoreLabel"
-                        placeholder="Low score label"
-                        label="Low score label"
-                        label-placement="right"
-                    />
-                    <UiFormInput
-                        v-model="question.highScoreLabel"
-                        placeholder="High score label"
-                        label="High score label"
-                        label-placement="right"
-                    />
-                </div>
             </div>
+
+            <!-- Score Labels -->
+            <div
+                v-if="
+                    question.type === QuestionType.REACTION ||
+                    question.type === QuestionType.RATING_5 ||
+                    question.type === QuestionType.RATING_7 ||
+                    question.type === QuestionType.NPS
+                "
+                class="flex flex-col gap-6"
+            >
+                <UiFormInput
+                    v-model="question.lowScoreLabel"
+                    placeholder="Low score label"
+                    label="Low score label"
+                    label-placement="right"
+                />
+                <UiFormInput
+                    v-model="question.highScoreLabel"
+                    placeholder="High score label"
+                    label="High score label"
+                    label-placement="right"
+                />
+            </div>
+
+            <UiFormTextarea
+                v-if="question.type === QuestionType.STATEMENT"
+                v-model="question.content"
+                placeholder="Enter description here... (optional)"
+                label-placement="right"
+                class="w-full"
+            />
 
             <!-- Logic Section -->
             <div v-if="question.logic?.options" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
