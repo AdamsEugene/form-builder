@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Device type enum
 type DeviceType = 'desktop' | 'mobile';
-import { Monitor, Smartphone } from 'lucide-vue-next';
+import { Monitor, Smartphone, RefreshCcwDot } from 'lucide-vue-next';
 
 const deviceType = ref<DeviceType>('desktop');
 
@@ -31,31 +31,20 @@ const isActiveDevice = (type: DeviceType) => deviceType.value === type;
         <!-- Preview Controls -->
         <div class="flex items-center gap-2 justify-between">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Preview</h2>
-            <!-- Refresh Button -->
-            <button
-                type="button"
-                @click="handleRefresh"
-                class="p-2 text-gray-500 hover:text-gray-700 rounded-2xl hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-800"
-            >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                >
-                    <path d="M21 2v6h-6" />
-                    <path d="M3 12a9 9 0 0 1 15-6.7L21 8" />
-                    <path d="M3 22v-6h6" />
-                    <path d="M21 12a9 9 0 0 1-15 6.7L3 16" />
-                </svg>
-            </button>
 
             <!-- Device Toggle -->
-            <div class="bg-gray-100 rounded-2xl p-1 flex gap-1 dark:bg-gray-800">
+            <div class="bg-gray-100 rounded-2xl p-1 flex gap-1 dark:bg-gray-800 overflow-hidden">
+                <!-- Refresh Button -->
+                <button
+                    type="button"
+                    @click="handleRefresh"
+                    :class="[
+                        'p-1.5 rounded',
+                        'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300',
+                    ]"
+                >
+                    <RefreshCcwDot class="h-5 w-5" />
+                </button>
                 <button
                     type="button"
                     @click="toggleDevice('desktop')"

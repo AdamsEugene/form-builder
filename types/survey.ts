@@ -12,6 +12,7 @@ import {
     Stars,
     PieChart,
     TextQuote,
+    type LucideIcon,
 } from 'lucide-vue-next';
 
 // Question Types
@@ -27,6 +28,7 @@ export enum QuestionType {
     RATING_7 = 'rating_7',
     NPS = 'nps',
     STATEMENT = 'statement',
+    THANK_YOU = 'thank_you',
 }
 
 // Reaction Types
@@ -45,6 +47,7 @@ interface BaseQuestion {
     required: boolean;
     logic?: {
         nextQuestion: string | null; // id of next question or null for default flow
+        options?: DropdownOption[];
     };
 }
 
@@ -63,7 +66,7 @@ interface ReactionQuestion extends BaseQuestion {
 
 // Text Questions
 interface TextQuestion extends BaseQuestion {
-    type: QuestionType.SHORT_TEXT | QuestionType.LONG_TEXT | QuestionType.EMAIL;
+    type: QuestionType.SHORT_TEXT | QuestionType.LONG_TEXT | QuestionType.EMAIL | QuestionType.THANK_YOU;
     placeholder?: string;
 }
 
@@ -97,6 +100,14 @@ export interface Survey {
     id: string;
     title: string;
     questions: Question[];
+}
+
+export interface DropdownOption {
+    id: string | number;
+    label: string;
+    icon?: LucideIcon;
+    disabled?: boolean;
+    description?: string;
 }
 
 export const questionTypes = [

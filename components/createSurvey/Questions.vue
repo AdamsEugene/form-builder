@@ -4,27 +4,40 @@ const selectedOption = ref<string | number | null>(null);
 import { QuestionType, questionTypes, ReactionType, type Question } from '~/types/survey';
 import { Plus, BrainCog, ArrowRight } from 'lucide-vue-next';
 
-const INITIAL_QUESTION: Question = {
-    id: crypto.randomUUID(),
-    type: QuestionType.REACTION,
-    title: 'asa',
-    required: false,
-    reactionType: ReactionType.SMILEYS,
-    logic: {
-        nextQuestion: 'Thank you message',
+const INITIAL_QUESTION: Question[] = [
+    {
+        id: crypto.randomUUID(),
+        type: QuestionType.REACTION,
+        title: 'How would you rate your experience?',
+        required: false,
+        reactionType: ReactionType.SMILEYS,
+        logic: {
+            nextQuestion: 'Thank you message',
+            options: [{ id: '1', label: 'Next question' }],
+        },
+        highScoreLabel: 'Very satisfied',
+        lowScoreLabel: 'Not satisfied',
+        image: { height: 20, width: 20, url: '' },
     },
-    highScoreLabel: 'Very satisfied',
-    lowScoreLabel: 'Not satisfied',
-    image: { height: 20, width: 20, url: '' },
-};
+    {
+        id: crypto.randomUUID(),
+        type: QuestionType.THANK_YOU,
+        title: 'How would you rate your experience?',
+        required: false,
+        logic: {
+            nextQuestion: 'Thank you message',
+            options: [{ id: '1', label: 'Next question' }],
+        },
+    },
+];
 
-const questions = ref<Question[]>([INITIAL_QUESTION]);
+const questions = ref<Question[]>([...INITIAL_QUESTION]);
 const questionsContainer = ref<HTMLElement | null>(null);
 const lastAddedQuestion = ref<Element | ComponentPublicInstance | null>(null);
 
 const addQuestion = () => {
     const newQuestion = {
-        ...INITIAL_QUESTION,
+        ...INITIAL_QUESTION[0],
         id: crypto.randomUUID(),
     };
     questions.value.push(newQuestion);
@@ -54,7 +67,7 @@ const handleChange = (option: any) => {
 
 <template>
     <div class="flex flex-col gap-8">
-        <div class="grid grid-cols-3 gap-4 w-full">
+        <!-- <div class="grid grid-cols-3 gap-4 w-full">
             <UiBaseButton @click="addQuestion" class="gap-2">
                 <Plus class="w-6 h-6" />
                 Add question
@@ -68,31 +81,26 @@ const handleChange = (option: any) => {
                 @change="handleChange"
                 class="col-span-2"
             />
-        </div>
+        </div> -->
 
         <TransitionGroup ref="questionsContainer" name="questions" tag="div" class="flex flex-col gap-4">
             <div
                 v-for="(question, index) in questions"
                 :key="question.id"
-                class="transform transition-all duration-300"
+                class="transition-all duration-300"
                 :ref="index === questions.length - 1 ? (el) => (lastAddedQuestion = el) : undefined"
             >
-                <SharedSurveyQuestion v-model="questions[index]" :index="index" @delete="deleteQuestion(index)" />
+                <SharedSurveyQuestion
+                    v-model="questions[index]"
+                    :index="index"
+                    @delete="deleteQuestion(index)"
+                    @add-question="addQuestion"
+                    @change="handleChange"
+                />
             </div>
         </TransitionGroup>
 
-        <div class="flex gap-2">
-            <UiBaseButton @click="addQuestion" class="gap-2">
-                <Plus class="w-6 h-6" />
-                Add question
-                <BrainCog class="w-6 h-6" />
-            </UiBaseButton>
-            <UiBaseButton variant="outline">
-                <div class="flex items-center gap-1">More options</div>
-            </UiBaseButton>
-        </div>
-
-        <UiBaseButton size="md">Next <ArrowRight /></UiBaseButton>
+        <UiBaseButton size="md" class="w-max self-end" data-question>Next <ArrowRight /></UiBaseButton>
     </div>
 </template>
 

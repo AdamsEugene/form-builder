@@ -2,17 +2,9 @@
 <script setup lang="ts">
 import type { LucideIcon } from 'lucide-vue-next';
 
-interface Option {
-    id: string | number;
-    label: string;
-    icon?: LucideIcon;
-    disabled?: boolean;
-    description?: string;
-}
-
 interface Props {
     modelValue: string | number | null;
-    options: Option[];
+    options: DropdownOption[];
     placeholder?: string;
     label?: string;
     disabled?: boolean;
@@ -24,6 +16,7 @@ interface Props {
 }
 
 import { vClickOutside } from '~/directives/clickOutside';
+import type { DropdownOption } from '~/types/survey';
 
 const props = withDefaults(defineProps<Props>(), {
     placeholder: 'Select an option',
@@ -35,7 +28,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
     'update:modelValue': [value: string | number | null];
-    change: [option: Option | null];
+    change: [option: DropdownOption | null];
 }>();
 
 const isOpen = ref(false);
@@ -51,7 +44,7 @@ const filteredOptions = computed(() => {
     return props.options?.filter((option) => option.label.toLowerCase().includes(searchQuery.value.toLowerCase()));
 });
 
-const handleSelect = (option: Option) => {
+const handleSelect = (option: DropdownOption) => {
     emit('update:modelValue', option.id);
     emit('change', option);
     isOpen.value = false;

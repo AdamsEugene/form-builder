@@ -236,7 +236,7 @@
                     } flex-1 px-6 py-4`"
                 >
                     <TopBar />
-                    <div class="mt-2 scrollbar-thin scrollbar-thin-auto h-[calc(100vh-104px)] overflow-auto">
+                    <div class="mt-2 pr-6 scrollbar-thin scrollbar-thin-auto h-[calc(100vh-104px)] overflow-auto">
                         <slot />
                     </div>
                 </div>
