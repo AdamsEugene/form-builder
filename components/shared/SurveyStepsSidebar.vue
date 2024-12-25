@@ -99,9 +99,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
-const { $global } = useNuxtApp();
+const { survey, isMiniCollapsed, toggleMiniSidebar, updateSidebarState } = useGlobal();
+
+const selectedType = ref(survey.value?.type);
 
 interface EmitEvents {
     (e: 'stepChange', index: number): void;
@@ -109,10 +111,15 @@ interface EmitEvents {
 
 const emit = defineEmits<EmitEvents>();
 
-const isCollapsed = $global.isMiniCollapsed;
+const isCollapsed = isMiniCollapsed;
 const activeStepIndex = ref(0);
 
-const completedSteps = [{ name: 'Details: New survey' }, { name: 'Type: Popover' }, { name: 'Questions: 2 questions' }];
+// Convert to computed property to react to selectedType changes
+const completedSteps = computed(() => [
+    { name: 'Details: New survey' },
+    { name: `Type: ${selectedType.value}` },
+    { name: 'Questions: 2 questions' },
+]);
 
 const upcomingSteps = [
     { name: 'Appearance' },
@@ -128,7 +135,14 @@ const setActiveStep = (index: number) => {
 };
 
 const toggleSidebar = async () => {
-    await $global.toggleMiniSidebar();
-    if (!isCollapsed.value) await $global.updateSidebarState(true);
+    await toggleMiniSidebar();
+    if (!isCollapsed.value) await updateSidebarState(true);
 };
+
+watch(
+    () => survey.value?.type,
+    (newType) => {
+        selectedType.value = newType;
+    }
+);
 </script>
