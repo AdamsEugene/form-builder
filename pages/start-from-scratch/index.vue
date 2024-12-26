@@ -54,7 +54,7 @@ const getStepComponent = computed(() => {
                 <SurveyStepsSidebar v-if="true" />
             </div>
         </div>
-        <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2 w-full">
+        <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 w-full">
             <div class="w-full">
                 <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Start from scratch</h1>
 

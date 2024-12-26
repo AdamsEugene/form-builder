@@ -1,7 +1,7 @@
 <!-- components/SurveyQuestion.vue -->
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { Image, Key, MessageCircle, Plus, Trash2 } from 'lucide-vue-next';
+import {  computed } from 'vue';
+import { Image,  MessageCircle, Plus, Trash2 } from 'lucide-vue-next';
 import { QuestionType, questionTypes, ReactionType, type DropdownOption, type Question } from '~/types/survey';
 
 interface Props {
@@ -220,7 +220,10 @@ const isBusinessFeature = computed(() => {
                     class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"
                 >
                     <h4 class="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Logic</h4>
-                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">After this question, go to:</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                        After this question, go to:
+                        {{ question?.logic?.options.find((item) => item.id === question?.logic?.nextQuestion)?.label }}
+                    </p>
                     <UiBaseDropdown
                         v-model="question.logic.nextQuestion"
                         :options="question.logic?.options"
