@@ -296,7 +296,9 @@ const handleClick = () => {
 
             <!-- Next Button -->
             <div v-if="showNextButton" class="flex items-center gap-6 justify-end">
-                <UiBaseButton v-if="!question?.required" variant="ghost">Skip</UiBaseButton>
+                <UiBaseButton v-if="!question?.required && question?.type !== QuestionType.THANK_YOU" variant="ghost">
+                    Skip
+                </UiBaseButton>
 
                 <UiBaseButton
                     :disabled="nextButtonDisabled || !modelValue"

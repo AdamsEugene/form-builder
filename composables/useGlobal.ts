@@ -123,7 +123,7 @@ export const useGlobal = () => {
         isCollapsed: readonly(isCollapsed),
         isMiniCollapsed: readonly(isMiniCollapsed),
         currentIndex: readonly(currentIndex),
-        survey: readonly(survey),
+        survey: survey,
         activeQuestion: activeQuestion,
         toggleSidebar,
         toggleMiniSidebar,

@@ -5,7 +5,9 @@ import { ArrowRight } from 'lucide-vue-next';
 const { survey, setSurvey, setActiveQuestion, activeQuestion } = useGlobal();
 
 // Refs
-const questions = ref<Question[]>([INITIAL_QUESTIONS.reaction, INITIAL_QUESTIONS.thank_you]);
+const questions = ref<Question[]>(
+    survey.value?.questions ? survey.value?.questions : [INITIAL_QUESTIONS.reaction, INITIAL_QUESTIONS.thank_you]
+);
 const questionsContainer = ref<HTMLElement | null>(null);
 const lastAddedQuestion = ref<Element | ComponentPublicInstance | null>(null);
 
