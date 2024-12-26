@@ -1,69 +1,150 @@
 <script setup lang="ts">
-import { QuestionType, questionTypes, ReactionType, type DropdownOption, type Question } from '~/types/survey';
+import {
+    QuestionType,
+    questionTypes,
+    ReactionType,
+    type ChoiceQuestion,
+    type DropdownOption,
+    type Question,
+} from '~/types/survey';
 import { ArrowRight } from 'lucide-vue-next';
 
-const INITIAL_QUESTION: Question[] = [
-    {
-        id: crypto.randomUUID(),
-        type: QuestionType.REACTION,
-        title: 'How would you rate your experience?',
-        required: false,
-        reactionType: ReactionType.SMILEYS,
-        logic: {
-            nextQuestion: 'Thank you message',
-            options: [{ id: '1', label: 'Next question' }],
-        },
-        highScoreLabel: 'Very satisfied',
-        lowScoreLabel: 'Not satisfied',
-        image: { height: 20, width: 20, url: '' },
+// Constants and initial state
+const INITIAL_REACTION_QUESTION: Question = {
+    id: crypto.randomUUID(),
+    type: QuestionType.REACTION,
+    title: 'How would you rate your experience?',
+    required: false,
+    reactionType: ReactionType.SMILEYS,
+    logic: {
+        nextQuestion: 'Thank you message',
+        options: [{ id: '1', label: 'Next question' }],
     },
-    {
-        id: crypto.randomUUID(),
-        type: QuestionType.THANK_YOU,
-        title: 'How would you rate your experience?',
-        required: false,
-        logic: {
-            nextQuestion: 'Thank you message',
-            options: [{ id: '1', label: 'Next question' }],
-        },
-    },
-];
+    highScoreLabel: 'Very satisfied',
+    lowScoreLabel: 'Not satisfied',
+    image: { height: 20, width: 20, url: '' },
+};
 
-const questions = ref<Question[]>([...INITIAL_QUESTION]);
+const THANK_YOU_QUESTION: Question = {
+    id: crypto.randomUUID(),
+    type: QuestionType.THANK_YOU,
+    title: 'How would you rate your experience?',
+    required: false,
+    logic: {
+        nextQuestion: 'Thank you message',
+        options: [{ id: '1', label: 'Next question' }],
+    },
+};
+
+// Refs
+const questions = ref<Question[]>([INITIAL_REACTION_QUESTION, THANK_YOU_QUESTION]);
 const questionsContainer = ref<HTMLElement | null>(null);
 const lastAddedQuestion = ref<Element | ComponentPublicInstance | null>(null);
 
-const addQuestion = () => {
-    const newQuestion = {
-        ...INITIAL_QUESTION[0],
+// Utility functions
+const scrollToElement = (element: Element) => {
+    element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+    });
+};
+
+const createQuestionWithType = (type: any): Question => {
+    return {
+        ...INITIAL_REACTION_QUESTION,
         id: crypto.randomUUID(),
+        type,
+        title: '',
+        reactionType: ReactionType.SMILEYS,
+        highScoreLabel: 'Very satisfied',
+        lowScoreLabel: 'Not satisfied',
+    };
+};
+
+// Logic options management
+const updateLogicOptions = () => {
+    const questionsExceptThankYou = questions.value.filter((q) => q.type !== QuestionType.THANK_YOU);
+
+    const getQuestionOptions = (questionId: string) => {
+        const otherQuestions = questionsExceptThankYou
+            .filter((q) => q.id !== questionId)
+            .map((q, idx) => ({
+                id: q.id,
+                label: `Question ${idx + 1}: ${q.title}`,
+            }));
+
+        return [...otherQuestions, { id: 'next', label: 'Next question' }];
     };
 
-    // Insert the new question before the last question (Thank you message)
-    const insertIndex = Math.max(0, questions.value.length - 1);
-    questions.value.splice(insertIndex, 0, newQuestion);
+    questionsExceptThankYou.forEach((question) => {
+        const newOptions = getQuestionOptions(question.id);
 
-    // Wait for DOM to update
-    nextTick(() => {
-        // Get the last question element
-        const elements = document.querySelectorAll('[data-question]');
-        const lastElement = elements[elements.length - 1];
-        if (lastElement) {
-            lastElement.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start',
-            });
+        if (!question.logic || JSON.stringify(question.logic.options) !== JSON.stringify(newOptions)) {
+            question.logic = {
+                nextQuestion: question.logic?.nextQuestion || 'next',
+                options: newOptions,
+            };
         }
     });
 };
-const deleteQuestion = (index: number) => {
-    questions.value.splice(index, 1);
+
+// Question management
+const addQuestion = () => {
+    const newQuestion = createQuestionWithType(QuestionType.REACTION);
+    const insertIndex = Math.max(0, questions.value.length - 1);
+
+    questions.value.splice(insertIndex, 0, newQuestion);
+    updateLogicOptions();
+
+    nextTick(() => {
+        const elements = document.querySelectorAll('[data-question]');
+        const lastElement = elements[elements.length - 1];
+        if (lastElement) scrollToElement(lastElement);
+    });
 };
 
-const handleChange = (option: DropdownOption | null) => {
-    if (!option) return;
-    // console.log('Selected option:', option);
+const deleteQuestion = (index: number) => {
+    questions.value.splice(index, 1);
+    updateLogicOptions();
 };
+
+// Answer management for choice questions
+const addAnswer = (questionId: string) => {
+    const question = questions.value.find((q) => q.id === questionId) as ChoiceQuestion | null;
+    if (!question) return;
+
+    const newOption = { id: crypto.randomUUID(), text: '' };
+    question.options = [...(question.options || []), newOption];
+};
+
+const deleteAnswer = (questionId: string, answerId: string) => {
+    const question = questions.value.find((q) => q.id === questionId) as ChoiceQuestion | null;
+    if (!question?.options) return;
+
+    question.options = question.options.filter((answer) => answer.id !== answerId);
+};
+
+// Change handlers
+const handleChange = (option: DropdownOption | null, index: number) => {
+    if (!option) return;
+
+    const newQuestion = createQuestionWithType(option.id as QuestionType);
+    const insertIndex = Math.max(0, questions.value.length - 1);
+
+    questions.value.splice(insertIndex, 0, newQuestion);
+    updateLogicOptions();
+
+    nextTick(() => {
+        const elements = document.querySelectorAll('[data-question]');
+        const lastElement = elements[elements.length - 1];
+        if (lastElement) scrollToElement(lastElement);
+    });
+};
+
+// Lifecycle hooks
+onMounted(() => {
+    updateLogicOptions();
+});
 </script>
 
 <template>
@@ -80,13 +161,15 @@ const handleChange = (option: DropdownOption | null) => {
                     :index="index"
                     @delete="deleteQuestion(index)"
                     @add-question="addQuestion"
-                    @change="handleChange"
+                    @change="(type) => handleChange(type, index)"
+                    @add-answer="addAnswer"
+                    @delete-answer="deleteAnswer"
                     data-question
                 />
             </div>
         </TransitionGroup>
 
-        <UiBaseButton size="md" class="w-max self-end">Next <ArrowRight /></UiBaseButton>
+        <UiBaseButton size="md" class="w-max self-end mb-4"> Next <ArrowRight /> </UiBaseButton>
     </div>
 </template>
 

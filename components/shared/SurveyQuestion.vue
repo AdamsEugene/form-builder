@@ -1,7 +1,7 @@
 <!-- components/SurveyQuestion.vue -->
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { Image, MessageCircle, Plus, Trash2 } from 'lucide-vue-next';
+import { Image, Key, MessageCircle, Plus, Trash2 } from 'lucide-vue-next';
 import { QuestionType, questionTypes, ReactionType, type DropdownOption, type Question } from '~/types/survey';
 
 interface Props {
@@ -13,6 +13,8 @@ interface Emits {
     (e: 'update:modelValue', value: Question): void;
     (e: 'delete' | 'add-question'): void;
     (e: 'change', type: DropdownOption | null): void;
+    (e: 'add-answer', id: string): void;
+    (e: 'delete-answer', questionId: string, answerId: string): void;
 }
 
 const props = defineProps<Props>();
@@ -22,9 +24,18 @@ const addQuestion = () => {
     emit('add-question');
 };
 
+const addAnswer = (id: string) => {
+    emit('add-answer', id);
+};
+
+const deleteAnswer = (questionId: string, answerId: string) => {
+    emit('delete-answer', questionId, answerId);
+};
+
 const handleChange = (type: DropdownOption | null) => {
     emit('change', type);
 };
+
 const question = computed({
     get: () => props.modelValue,
     set: (value) => emit('update:modelValue', value),
@@ -46,7 +57,7 @@ const isBusinessFeature = computed(() => {
     <div class="w-full flex flex-col gap-6">
         <div v-if="question.type !== QuestionType.THANK_YOU" class="flex items-center justify-end gap-4 w-full">
             <div class="p-1 w-8"></div>
-            <UiBaseButton @click="addQuestion" class="">
+            <UiBaseButton @click="addQuestion" size="sm" class="">
                 <Plus class="w-6 h-6" />
                 Add question
                 <BrainCog class="w-6 h-6" />
@@ -74,7 +85,7 @@ const isBusinessFeature = computed(() => {
                 class="bg-white w-full mb-4 dark:bg-gray-800 flex flex-col gap-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg"
             >
                 <!-- Question Header -->
-                <div v-if="question.type === QuestionType.THANK_YOU" class="grid grid-cols-3 gap-4 w-full">
+                <div v-if="question.type === QuestionType.THANK_YOU" class="w-full">
                     <p>Thank you message</p>
                 </div>
 
@@ -121,39 +132,31 @@ const isBusinessFeature = computed(() => {
                     v-if="question.type === QuestionType.RADIO || question.type === QuestionType.CHECKBOX"
                     class="flex flex-col gap-6"
                 >
-                    <div class="flex items-center gap-2 w-full">
+                    <div v-for="(answer, index) in question.options" class="flex items-center gap-2 w-full">
                         <UiFormInput
-                            v-model="question.title"
+                            v-model="answer.text"
                             placeholder="answer here"
-                            label="Answer 1"
+                            :label="'Answer ' + (index + 1)"
                             label-placement="right"
                             class="w-full"
                         />
                         <UiBaseButton variant="ghost" size="sm" class="" @click="$emit('delete')">
                             <MessageCircle class="w-4 h-4" />
                         </UiBaseButton>
-                        <UiBaseButton variant="ghost" size="sm" class="text-red-500" @click="$emit('delete')">
-                            <Trash2 class="w-4 h-4" />
-                        </UiBaseButton>
-                    </div>
-                    <div class="flex items-center gap-2 w-full">
-                        <UiFormInput
-                            v-model="question.title"
-                            placeholder="answer here"
-                            label="Answer 2"
-                            label-placement="right"
-                            class="w-full"
-                        />
-                        <UiBaseButton variant="ghost" size="sm" class="" @click="$emit('delete')">
-                            <MessageCircle class="w-4 h-4" />
-                        </UiBaseButton>
-                        <UiBaseButton variant="ghost" size="sm" class="text-red-500" @click="$emit('delete')">
+                        <UiBaseButton
+                            variant="ghost"
+                            size="sm"
+                            class="text-red-500"
+                            @click="deleteAnswer(question.id, answer.id)"
+                        >
                             <Trash2 class="w-4 h-4" />
                         </UiBaseButton>
                     </div>
                     <div class="flex items-center gap-4">
-                        <UiBaseButton size="sm" variant="outline"><Plus class="w-6 h-6" />Add answer</UiBaseButton>
-                        <UiBaseCheckbox v-model="question.required" label="Randomized" size="lg" />
+                        <UiBaseButton size="sm" variant="outline" @click="addAnswer(question.id)">
+                            <Plus class="w-6 h-6" />Add answer</UiBaseButton
+                        >
+                        <UiBaseCheckbox v-model="question.randomized" label="Randomized" size="lg" />
                     </div>
                 </div>
 
@@ -212,7 +215,10 @@ const isBusinessFeature = computed(() => {
                 />
 
                 <!-- Logic Section -->
-                <div v-if="question.logic?.options" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <div
+                    v-if="question.logic?.options && question.type !== QuestionType.THANK_YOU"
+                    class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"
+                >
                     <h4 class="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Logic</h4>
                     <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">After this question, go to:</p>
                     <UiBaseDropdown

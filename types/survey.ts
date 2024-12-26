@@ -71,11 +71,12 @@ interface TextQuestion extends BaseQuestion {
 }
 
 // Choice Questions
-interface ChoiceQuestion extends BaseQuestion {
+export interface ChoiceQuestion extends BaseQuestion {
     type: QuestionType.YES_NO | QuestionType.RADIO | QuestionType.CHECKBOX;
+    randomized: boolean;
     options: Array<{
         id: string;
-        label: string;
+        text: string;
     }>;
 }
 
@@ -103,7 +104,7 @@ export interface Survey {
 }
 
 export interface DropdownOption {
-    id: string | number;
+    id: QuestionType | string;
     label: string;
     icon?: LucideIcon;
     disabled?: boolean;
@@ -112,67 +113,67 @@ export interface DropdownOption {
 
 export const questionTypes = [
     {
-        id: 'reaction',
+        id: QuestionType.REACTION,
         label: 'Reaction',
         icon: ThumbsUp,
         description: 'Simple reaction feedback',
     },
     {
-        id: 'short_text',
+        id: QuestionType.SHORT_TEXT,
         label: 'Short text answer',
         icon: MessageSquare,
         description: 'Brief text response',
     },
     {
-        id: 'long_text',
+        id: QuestionType.LONG_TEXT,
         label: 'Long text answer',
         icon: FileText,
         description: 'Detailed text response',
     },
     {
-        id: 'email',
+        id: QuestionType.EMAIL,
         label: 'Email',
         icon: Mail,
         description: 'Collect email addresses',
     },
     {
-        id: 'yes_no',
+        id: QuestionType.YES_NO,
         label: 'Yes / No',
         icon: CheckSquare,
         description: 'Binary choice question',
     },
     {
-        id: 'radio',
+        id: QuestionType.RADIO,
         label: 'Radio options',
         icon: Circle,
         description: 'Single choice from multiple options',
     },
     {
-        id: 'checkbox',
+        id: QuestionType.CHECKBOX,
         label: 'Checkbox options',
         icon: CheckSquare2,
         description: 'Multiple choice selection',
     },
     {
-        id: 'rating_5',
+        id: QuestionType.RATING_5,
         label: '1 - 5 Rating scale',
         icon: Star,
         description: 'Five-point rating scale',
     },
     {
-        id: 'rating_7',
+        id: QuestionType.RATING_7,
         label: '1 - 7 Rating scale',
         icon: Stars,
         description: 'Seven-point rating scale',
     },
     {
-        id: 'nps',
+        id: QuestionType.NPS,
         label: 'Net Promoter Score',
         icon: PieChart,
         description: 'Measure customer loyalty (0-10)',
     },
     {
-        id: 'statement',
+        id: QuestionType.STATEMENT,
         label: 'Statement',
         icon: TextQuote,
         description: 'Display text without requiring response',
