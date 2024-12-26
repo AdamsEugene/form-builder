@@ -18,7 +18,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    rows: 4,
+    rows: 2,
     required: false,
     disabled: false,
     size: 'md',

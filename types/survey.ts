@@ -71,14 +71,30 @@ interface TextQuestion extends BaseQuestion {
 }
 
 // Choice Questions
-export interface ChoiceQuestion extends BaseQuestion {
-    type: QuestionType.YES_NO | QuestionType.RADIO | QuestionType.CHECKBOX;
-    randomized: boolean;
-    options: Array<{
-        id: string;
-        text: string;
-    }>;
+interface BaseChoiceOption {
+    id: string;
+    text: string;
 }
+
+interface CheckboxOption extends BaseChoiceOption {
+    isSelected: boolean;
+}
+
+export interface BaseChoiceQuestion extends BaseQuestion {
+    randomized: boolean;
+}
+
+export interface RadioOrYesNoQuestion extends BaseChoiceQuestion {
+    type: QuestionType.YES_NO | QuestionType.RADIO;
+    options: Array<BaseChoiceOption>;
+}
+
+export interface CheckboxQuestion extends BaseChoiceQuestion {
+    type: QuestionType.CHECKBOX;
+    options: Array<CheckboxOption>;
+}
+
+export type ChoiceQuestion = RadioOrYesNoQuestion | CheckboxQuestion;
 
 // Rating Questions
 interface RatingQuestion extends BaseQuestion {

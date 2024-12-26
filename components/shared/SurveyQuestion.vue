@@ -7,18 +7,22 @@ import { QuestionType, questionTypes, ReactionType, type DropdownOption, type Qu
 interface Props {
     modelValue: Question;
     index: number;
+    noDelete: boolean;
 }
 
 interface Emits {
     (e: 'update:modelValue', value: Question): void;
     (e: 'delete' | 'add-question'): void;
     (e: 'change', type: DropdownOption | null): void;
+    (e: 'replace', type: DropdownOption | null): void;
     (e: 'add-answer', id: string): void;
     (e: 'delete-answer', questionId: string, answerId: string): void;
 }
 
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
+
+const { setActiveQuestion, activeQuestion } = useGlobal();
 
 const newQuestion = ref('');
 
@@ -38,6 +42,10 @@ const handleChange = (type: DropdownOption | null) => {
     emit('change', type);
 };
 
+const handleReplace = (type: DropdownOption | null) => {
+    emit('replace', type);
+};
+
 const question = computed({
     get: () => props.modelValue,
     set: (value) => emit('update:modelValue', value),
@@ -53,11 +61,18 @@ const reactionTypes = [
 const isBusinessFeature = computed(() => {
     return ['buddies'].includes(question.value.type);
 });
+
+watch(
+    () => props.modelValue,
+    () => {
+        newQuestion.value = '';
+    }
+);
 </script>
 
 <template>
     <div class="w-full flex flex-col gap-6">
-        <div v-if="question.type !== QuestionType.THANK_YOU" class="flex items-center justify-end gap-4 w-full">
+        <div class="flex items-center justify-end gap-4 w-full">
             <div class="p-1 w-8"></div>
             <UiBaseButton @click="addQuestion" size="sm" class="">
                 <Plus class="w-6 h-6" />
@@ -66,11 +81,11 @@ const isBusinessFeature = computed(() => {
             </UiBaseButton>
             <UiBaseDropdown
                 v-model="newQuestion"
-                :options="questionTypes"
-                placeholder="Select a question type"
-                :searchable="true"
-                @change="handleChange"
+                searchable
                 class="max-w-[400px]"
+                placeholder="Select a question type"
+                :options="questionTypes"
+                @change="handleChange"
             />
         </div>
 
@@ -84,7 +99,10 @@ const isBusinessFeature = computed(() => {
             </div>
 
             <div
-                class="bg-white w-full mb-4 dark:bg-gray-800 flex flex-col gap-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg"
+                class="bg-white w-full mb-4 dark:bg-gray-800 flex flex-col gap-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg transition-shadow"
+                :class="{ '!shadow-lg': activeQuestion?.id === question.id }"
+                @mouseenter="setActiveQuestion(question)"
+                @click="setActiveQuestion(question)"
             >
                 <!-- Question Header -->
                 <div v-if="question.type === QuestionType.THANK_YOU" class="w-full">
@@ -95,16 +113,23 @@ const isBusinessFeature = computed(() => {
                 <div v-if="question.type !== QuestionType.THANK_YOU" class="flex items-center gap-4">
                     <UiBaseDropdown
                         v-model="question.type"
-                        :options="questionTypes"
                         searchable
                         class="col-span-2"
                         placeholder="Select question type"
+                        :options="questionTypes"
+                        @change="handleReplace"
                     />
                     <div class="flex items-center">
                         <UiBaseCheckbox v-model="question.required" label="Required" size="lg" />
                     </div>
                     <div class="flex items-center gap-2">
-                        <UiBaseButton variant="ghost" size="sm" class="text-red-500" @click="$emit('delete')">
+                        <UiBaseButton
+                            v-if="!noDelete"
+                            variant="ghost"
+                            size="sm"
+                            class="text-red-500"
+                            @click="$emit('delete')"
+                        >
                             <Trash2 class="w-4 h-4" />
                         </UiBaseButton>
                     </div>

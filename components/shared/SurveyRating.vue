@@ -2,6 +2,7 @@
 import type { CSSProperties } from 'vue';
 import { ChevronUp, ChevronDown, X } from 'lucide-vue-next';
 import type { FeedbackTab, PopoverPlacement, SidePlacement } from '~/types';
+import { QuestionType, type Question } from '~/types/survey';
 
 interface EmojiRating {
     emoji: string;
@@ -12,9 +13,7 @@ type DeviceType = 'mobile' | 'desktop' | 'tablet';
 
 interface Props {
     // Content
-    question?: string;
-    leftLabel?: string;
-    rightLabel?: string;
+    question: Question | null;
     nextButtonText?: string;
 
     // Rating configuration
@@ -50,9 +49,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
     // Default content
-    question: 'How would you rate your experience?',
-    leftLabel: 'Not good at all',
-    rightLabel: 'Very good',
+    question: () => INITIAL_QUESTIONS[QuestionType.REACTION],
     nextButtonText: 'Next',
     modelValue: null,
 
@@ -97,24 +94,12 @@ const emit = defineEmits<{
     click: [];
 }>();
 
+const textAnswer = ref('');
+const selectedOption = ref('option1');
+const isSelected = ref(false);
+const value = ref(5);
 // Computed styles based on device type and placement
 const containerStyles = computed<CSSProperties>(() => {
-    // const isTopLeft = props.placement === 'top-left';
-    // const isTopRight = props.placement === 'top-right';
-    // const isBottomLeft = props.placement === 'bottom-left';
-    // const isBottomRight = props.placement === 'bottom-right';
-
-    // let transformOrigin = 'center'; // Default
-
-    // // Define translation
-    // if (isTopLeft || isBottomLeft) {
-    //     transformOrigin = 'left'; // Expand from the left
-    // } else if (isTopRight || isBottomRight) {
-    //     transformOrigin = 'center right'; // Expand from the right
-    // }
-
-    // console.log(transformOrigin);
-
     return {
         position: 'relative',
         width: props.deviceType === 'mobile' ? '100%' : 'auto',
@@ -155,17 +140,17 @@ const handleClick = () => {
             // { maxWidth: !isOpen ? '300px' : '100%' }
         ]"
     >
-        <div class="w-full flex gap-2 items-center mb-4 cursor-pointer" @click="handleClick">
-            <h3
-                class="text-lg font-medium flex-1 truncate"
-                :style="{ color: questionColor, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }"
-            >
-                {{ question }}
+        <div class="w-[320px] flex gap-2 items-center mb-4 cursor-pointer" @click="handleClick">
+            <h3 class="text-lg font-medium flex-1" :style="{ color: questionColor }">
+                {{ question?.title }}
             </h3>
             <div v-if="feedbackType === 'fullScreen' || feedbackType === 'link'" class="flex items-center justify-end">
                 <X />
             </div>
-            <div v-if="feedbackType === 'popover' || feedbackType === 'embedded'" class="flex items-center justify-end">
+            <div
+                v-if="feedbackType === 'popover' || feedbackType === 'embedded'"
+                class="flex items-center justify-end absolute top-2 right-3 z-30"
+            >
                 <ChevronUp v-if="!isOpen" />
                 <ChevronDown v-else />
             </div>
@@ -174,7 +159,11 @@ const handleClick = () => {
         <!-- Rating Section -->
         <div class="space-y-6 truncate">
             <!-- Emojis -->
-            <div class="flex justify-between items-center" :style="{ gap }">
+            <div
+                v-if="question?.type === QuestionType.REACTION"
+                class="flex justify-between items-center"
+                :style="{ gap }"
+            >
                 <div
                     v-for="rating in ratings"
                     :key="rating.value"
@@ -193,25 +182,133 @@ const handleClick = () => {
                 </div>
             </div>
 
+            <!-- LONG TEXT -->
+            <div
+                v-if="question?.type === QuestionType.LONG_TEXT"
+                class="flex justify-between items-center"
+                :style="{ gap }"
+            >
+                <UiFormTextarea
+                    v-model="textAnswer"
+                    placeholder="Enter your description"
+                    class="w-full"
+                    autogrow
+                    required
+                />
+            </div>
+
+            <!-- LONG TEXT -->
+            <div
+                v-if="question?.type === QuestionType.SHORT_TEXT || question?.type === QuestionType.EMAIL"
+                class="flex justify-between items-center"
+                :style="{ gap }"
+            >
+                <div class="w-full">
+                    <UiFormInput v-model="textAnswer" placeholder="Enter your description" class="w-full" required />
+                </div>
+            </div>
+
+            <!-- YES OR NO -->
+            <div
+                v-if="question?.type === QuestionType.YES_NO"
+                class="flex justify-between items-center"
+                :style="{ gap }"
+            >
+                <div class="w-full flex items-center justify-around">
+                    <UiBaseButton variant="secondary">YES</UiBaseButton>
+                    <UiBaseButton variant="secondary">NO</UiBaseButton>
+                </div>
+            </div>
+
+            <!-- RADIO -->
+            <div
+                v-if="question?.type === QuestionType.RADIO"
+                class="flex flex-col justify-between items-center"
+                :style="{ gap }"
+            >
+                <div v-for="answer in question.options" class="flex items-center gap-2 w-full">
+                    <UiBasePillRadio
+                        v-model="answer.id"
+                        name="options"
+                        :value="answer.id"
+                        :label="answer.text"
+                        class="w-full"
+                    />
+                </div>
+            </div>
+
+            <!-- CHECKBOX -->
+            <div
+                v-if="question?.type === QuestionType.CHECKBOX"
+                class="flex flex-col justify-between items-center"
+                :style="{ gap }"
+            >
+                <div v-for="answer in question.options" class="flex items-center gap-2 w-full">
+                    <UiBasePillCheckbox v-model="answer.isSelected" :label="answer.text" class="w-full" />
+                </div>
+            </div>
+
+            <!-- RATING 1-5 -->
+            <div
+                v-if="question?.type === QuestionType.RATING_5 || question?.type === QuestionType.RATING_7"
+                class="flex justify-between items-center"
+                :style="{ gap }"
+            >
+                <div class="w-full flex items-center justify-around">
+                    <UiBaseButton
+                        v-for="i in question?.type === QuestionType.RATING_5 ? 5 : 7"
+                        :key="i"
+                        variant="secondary"
+                        >{{ i }}</UiBaseButton
+                    >
+                </div>
+            </div>
+
+            <!-- RATING 1-5 -->
+            <div v-if="question?.type === QuestionType.NPS" class="flex justify-between items-center" :style="{ gap }">
+                <div class="w-full flex items-center justify-around">
+                    <UiRangeSlider
+                        v-model="value"
+                        :min="0"
+                        :max="10"
+                        :step="1"
+                        track-color="#ef4444"
+                        thumb-color="#ffffff"
+                        show-labels
+                    />
+                </div>
+            </div>
+
             <!-- Labels -->
-            <div class="flex justify-between text-sm" :style="{ color: labelColor }">
-                <span>{{ leftLabel }}</span>
-                <span>{{ rightLabel }}</span>
+            <div
+                v-if="
+                    question?.type === QuestionType.REACTION ||
+                    question?.type === QuestionType.RATING_5 ||
+                    question?.type === QuestionType.RATING_7 ||
+                    question?.type === QuestionType.NPS
+                "
+                class="flex justify-between text-sm"
+                :style="{ color: labelColor }"
+            >
+                <span>{{ question?.highScoreLabel }}</span>
+                <span>{{ question?.lowScoreLabel }}</span>
             </div>
 
             <!-- Next Button -->
-            <div v-if="showNextButton" class="flex justify-end mt-6">
-                <button
-                    @click="handleNext"
+            <div v-if="showNextButton" class="flex items-center gap-6 justify-end">
+                <UiBaseButton v-if="!question?.required" variant="ghost">Skip</UiBaseButton>
+
+                <UiBaseButton
                     :disabled="nextButtonDisabled || !modelValue"
-                    class="px-4 py-2 rounded-2xl transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     :style="{
                         backgroundColor: nextButtonBgColor,
                         color: nextButtonTextColor,
                     }"
+                    @click="handleNext"
                 >
-                    {{ nextButtonText }}
-                </button>
+                    {{ nextButtonText }}</UiBaseButton
+                >
+                <!-- IS REQUIRED -->
             </div>
         </div>
     </div>

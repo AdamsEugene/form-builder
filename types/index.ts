@@ -1,4 +1,4 @@
-import type { SurveyData } from './survey';
+import type { Question, SurveyData } from './survey';
 
 // types.ts
 export type PopoverPlacement = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'center';
@@ -45,4 +45,5 @@ export interface GlobalState {
     miniSidebarCollapsed: boolean;
     surveyData: Survey | null;
     currentIndex: number;
+    activeQuestion: Question | null;
 }

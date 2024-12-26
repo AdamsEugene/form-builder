@@ -1,4 +1,4 @@
-import { QuestionType, ReactionType, type Question } from "~/types/survey";
+import { QuestionType, ReactionType, type Question } from '~/types/survey';
 
 const INITIAL_REACTION_QUESTION: Question = {
     id: crypto.randomUUID(),
@@ -7,7 +7,7 @@ const INITIAL_REACTION_QUESTION: Question = {
     required: false,
     reactionType: ReactionType.SMILEYS,
     logic: {
-        nextQuestion: 'Thank you message',
+        nextQuestion: null,
         options: [{ id: '1', label: 'Next question' }],
     },
     highScoreLabel: 'Very satisfied',
@@ -21,7 +21,7 @@ const THANK_YOU_QUESTION: Question = {
     title: 'How would you rate your experience?',
     required: false,
     logic: {
-        nextQuestion: 'Thank you message',
+        nextQuestion: null,
         options: [{ id: '1', label: 'Next question' }],
     },
 };
@@ -87,7 +87,6 @@ const INITIAL_RADIO_QUESTION: Question = {
     options: [
         { id: 'option1', text: 'Option 1' },
         { id: 'option2', text: 'Option 2' },
-        { id: 'option3', text: 'Option 3' },
     ],
     logic: {
         nextQuestion: null,
@@ -102,9 +101,8 @@ const INITIAL_CHECKBOX_QUESTION: Question = {
     required: false,
     randomized: false,
     options: [
-        { id: 'option1', text: 'Option 1' },
-        { id: 'option2', text: 'Option 2' },
-        { id: 'option3', text: 'Option 3' },
+        { id: 'option1', text: 'Option 1', isSelected: false },
+        { id: 'option2', text: 'Option 2', isSelected: false },
     ],
     logic: {
         nextQuestion: null,

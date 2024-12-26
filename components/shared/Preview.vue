@@ -5,7 +5,7 @@ import FeedbackTab from '@/components/shared/FeedbackTab.vue';
 import type { FeedbackTab as FBT, Placement } from '~/types';
 import { useGlobal } from '@/composables/useGlobal'; // Assuming this is the correct path
 
-const { survey } = useGlobal();
+const { survey, activeQuestion } = useGlobal();
 
 const rating = ref<number>(0);
 const deviceType = ref<'mobile' | 'desktop' | 'tablet'>('desktop');
@@ -67,9 +67,7 @@ watch(
                 v-model:isOpen="isOpen"
                 :feedback-type="feedbackType"
                 :placement="configs(feedbackType).placement"
-                :question="survey?.title"
-                leftLabel="Not satisfied"
-                rightLabel="Very satisfied"
+                :question="activeQuestion"
                 :ratings="customRatings"
                 nextButtonText="Submit"
                 @next="handleNext"

@@ -33,7 +33,7 @@ const inputId = computed(() => `pill-checkbox-${useId()}`);
     <div class="inline-flex">
         <label
             :for="inputId"
-            class="relative flex items-center rounded-full border bg-white px-4 py-2 cursor-pointer transition-colors duration-200"
+            class="relative w-full flex items-center rounded-full border bg-white px-4 py-2 cursor-pointer transition-colors duration-200"
             :class="{
                 'opacity-50 cursor-not-allowed': disabled,
                 'border-gray-300 hover:bg-gray-50': !isChecked && !disabled,

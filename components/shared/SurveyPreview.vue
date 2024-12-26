@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Device type enum
-type DeviceType = 'desktop' | 'mobile';
-import { Monitor, Smartphone, RefreshCcwDot } from 'lucide-vue-next';
+type DeviceType = 'desktop' | 'mobile' | 'tablet';
+import { Monitor, Smartphone, RefreshCcwDot, Dice1 } from 'lucide-vue-next';
 
 const deviceType = ref<DeviceType>('desktop');
 
@@ -56,6 +56,19 @@ const isActiveDevice = (type: DeviceType) => deviceType.value === type;
                     ]"
                 >
                     <Monitor class="h-5 w-5" />
+                </button>
+
+                <button
+                    type="button"
+                    @click="toggleDevice('tablet')"
+                    :class="[
+                        'p-1.5 rounded',
+                        isActiveDevice('tablet')
+                            ? 'bg-white text-gray-700 shadow dark:bg-gray-700 dark:text-white'
+                            : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300',
+                    ]"
+                >
+                    <Dice1 class="h-5 w-5" />
                 </button>
 
                 <button

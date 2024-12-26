@@ -2,6 +2,8 @@
 import { QuestionType, type ChoiceQuestion, type DropdownOption, type Question } from '~/types/survey';
 import { ArrowRight } from 'lucide-vue-next';
 
+const { survey, setSurvey, setActiveQuestion, activeQuestion } = useGlobal();
+
 // Refs
 const questions = ref<Question[]>([INITIAL_QUESTIONS.reaction, INITIAL_QUESTIONS.thank_you]);
 const questionsContainer = ref<HTMLElement | null>(null);
@@ -35,7 +37,7 @@ const updateLogicOptions = () => {
 
         if (!question.logic || JSON.stringify(question.logic.options) !== JSON.stringify(newOptions)) {
             question.logic = {
-                nextQuestion: question.logic?.nextQuestion || 'next',
+                nextQuestion: question.logic?.nextQuestion || 'Next question',
                 options: newOptions,
             };
         }
@@ -45,10 +47,13 @@ const updateLogicOptions = () => {
 // Question management
 const addQuestion = () => {
     // Create a new question using the REACTION template as default
-    const newQuestion = {
-        ...INITIAL_QUESTIONS[QuestionType.REACTION],
-        id: crypto.randomUUID(), // Ensure unique ID
-    };
+    const newQuestion = JSON.parse(
+        JSON.stringify({
+            ...INITIAL_QUESTIONS[QuestionType.REACTION],
+            id: crypto.randomUUID(), // Ensure unique ID
+            type: QuestionType.REACTION, // Explicitly set the type
+        })
+    );
 
     const insertIndex = Math.max(0, questions.value.length - 1);
     questions.value.splice(insertIndex, 0, newQuestion);
@@ -100,15 +105,41 @@ const handleChange = (option: DropdownOption | null, index: number) => {
         id: crypto.randomUUID(),
     };
 
-    const insertIndex = Math.max(0, questions.value.length - 1);
-    questions.value.splice(insertIndex, 0, newQuestion);
+    questions.value.splice(index + 1, 0, newQuestion);
     updateLogicOptions();
 
     nextTick(() => {
         const elements = document.querySelectorAll('[data-question]');
-        const lastElement = elements[elements.length - 1];
-        if (lastElement) scrollToElement(lastElement);
+        const targetElement = elements[index + 1]; // Get the newly added question's element
+        if (targetElement) scrollToElement(targetElement);
     });
+};
+
+// Replace handlers
+const handleReplace = (option: DropdownOption | null, index: number) => {
+    if (!option) return;
+
+    const questionType = option.id as QuestionType;
+    const template = INITIAL_QUESTIONS[questionType];
+
+    if (!template) {
+        console.error(`No template found for question type: ${questionType}`);
+        return;
+    }
+
+    // Replace existing question with new template while preserving the ID
+    const existingId = questions.value[index].id;
+
+    // Create a fresh question object from the template
+    questions.value[index] = JSON.parse(
+        JSON.stringify({
+            ...template,
+            id: existingId,
+            type: questionType, // Explicitly set the type
+        })
+    );
+
+    updateLogicOptions();
 };
 
 // Lifecycle hooks
@@ -119,7 +150,16 @@ onMounted(() => {
 watch(
     () => questions.value,
     (questions) => {
-        console.log(questions);
+        if (questions) {
+            const rawQuestions = JSON.parse(JSON.stringify(toRaw(questions))) as Question[];
+            setSurvey({ questions: rawQuestions });
+
+            // Find the current active question in the new questions array
+            const updatedActiveQuestion = rawQuestions.find((q) => q.id === activeQuestion?.value?.id);
+            if (updatedActiveQuestion) {
+                setActiveQuestion(updatedActiveQuestion);
+            }
+        }
     },
     { deep: true }
 );
@@ -137,9 +177,11 @@ watch(
                 <SharedSurveyQuestion
                     v-model="questions[index]"
                     :index="index"
+                    :no-delete="questions.length === 2"
                     @delete="deleteQuestion(index)"
                     @add-question="addQuestion"
                     @change="(type) => handleChange(type, index)"
+                    @replace="(type) => handleReplace(type, index)"
                     @add-answer="addAnswer"
                     @delete-answer="deleteAnswer"
                     data-question
