@@ -1,7 +1,7 @@
 <!-- components/SurveyQuestion.vue -->
 <script setup lang="ts">
-import {  computed } from 'vue';
-import { Image,  MessageCircle, Plus, Trash2 } from 'lucide-vue-next';
+import { computed } from 'vue';
+import { Image, MessageCircle, Plus, Trash2 } from 'lucide-vue-next';
 import { QuestionType, questionTypes, ReactionType, type DropdownOption, type Question } from '~/types/survey';
 
 interface Props {
@@ -19,6 +19,8 @@ interface Emits {
 
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
+
+const newQuestion = ref('');
 
 const addQuestion = () => {
     emit('add-question');
@@ -63,7 +65,7 @@ const isBusinessFeature = computed(() => {
                 <BrainCog class="w-6 h-6" />
             </UiBaseButton>
             <UiBaseDropdown
-                v-model="question.type"
+                v-model="newQuestion"
                 :options="questionTypes"
                 placeholder="Select a question type"
                 :searchable="true"

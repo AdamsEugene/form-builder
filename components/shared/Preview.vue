@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import SurveyRating from '../shared/SurveyRating.vue';
+import { ref, watch } from 'vue';
+import SurveyRating from '@/components/shared/SurveyRating.vue';
+import FeedbackTab from '@/components/shared/FeedbackTab.vue';
 import type { FeedbackTab as FBT, Placement } from '~/types';
-import FeedbackTab from '../shared/FeedbackTab.vue';
+import { useGlobal } from '@/composables/useGlobal'; // Assuming this is the correct path
 
 const { survey } = useGlobal();
 
@@ -49,12 +51,14 @@ watch(
 
 <template>
     <div class="p-4 relative h-[560px] w-full">
+        <!-- FeedbackTab with higher z-index -->
         <FeedbackTab
             v-model="isOpen"
             :placement="configs(feedbackType).placement"
             content-width="max-content"
             :device-type="deviceType"
             :feedback-type="feedbackType"
+            class="relative z-30"
             @next="handleNext"
         >
             <SurveyRating
@@ -63,7 +67,7 @@ watch(
                 v-model:isOpen="isOpen"
                 :feedback-type="feedbackType"
                 :placement="configs(feedbackType).placement"
-                question="Hoyou with our service?"
+                :question="survey?.title"
                 leftLabel="Not satisfied"
                 rightLabel="Very satisfied"
                 :ratings="customRatings"
@@ -72,9 +76,11 @@ watch(
                 background-color=""
             />
         </FeedbackTab>
+
+        <!-- Overlay with lower z-index -->
         <div
             v-show="feedbackType === 'fullScreen' && isOpen"
-            className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-300 z-10"
+            class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-300 z-20"
         />
     </div>
 </template>

@@ -97,7 +97,7 @@ interface StatementQuestion extends BaseQuestion {
 export type Question = ReactionQuestion | TextQuestion | ChoiceQuestion | RatingQuestion | StatementQuestion;
 
 // Survey interface
-export interface Survey {
+export interface SurveyData {
     id: string;
     title: string;
     questions: Question[];

@@ -1,43 +1,9 @@
 <script setup lang="ts">
-import {
-    QuestionType,
-    questionTypes,
-    ReactionType,
-    type ChoiceQuestion,
-    type DropdownOption,
-    type Question,
-} from '~/types/survey';
+import { QuestionType, type ChoiceQuestion, type DropdownOption, type Question } from '~/types/survey';
 import { ArrowRight } from 'lucide-vue-next';
 
-// Constants and initial state
-const INITIAL_REACTION_QUESTION: Question = {
-    id: crypto.randomUUID(),
-    type: QuestionType.REACTION,
-    title: 'How would you rate your experience?',
-    required: false,
-    reactionType: ReactionType.SMILEYS,
-    logic: {
-        nextQuestion: 'Thank you message',
-        options: [{ id: '1', label: 'Next question' }],
-    },
-    highScoreLabel: 'Very satisfied',
-    lowScoreLabel: 'Not satisfied',
-    image: { height: 20, width: 20, url: '' },
-};
-
-const THANK_YOU_QUESTION: Question = {
-    id: crypto.randomUUID(),
-    type: QuestionType.THANK_YOU,
-    title: 'How would you rate your experience?',
-    required: false,
-    logic: {
-        nextQuestion: 'Thank you message',
-        options: [{ id: '1', label: 'Next question' }],
-    },
-};
-
 // Refs
-const questions = ref<Question[]>([INITIAL_REACTION_QUESTION, THANK_YOU_QUESTION]);
+const questions = ref<Question[]>([INITIAL_QUESTIONS.reaction, INITIAL_QUESTIONS.thank_you]);
 const questionsContainer = ref<HTMLElement | null>(null);
 const lastAddedQuestion = ref<Element | ComponentPublicInstance | null>(null);
 
@@ -47,18 +13,6 @@ const scrollToElement = (element: Element) => {
         behavior: 'smooth',
         block: 'start',
     });
-};
-
-const createQuestionWithType = (type: any): Question => {
-    return {
-        ...INITIAL_REACTION_QUESTION,
-        id: crypto.randomUUID(),
-        type,
-        title: '',
-        reactionType: ReactionType.SMILEYS,
-        highScoreLabel: 'Very satisfied',
-        lowScoreLabel: 'Not satisfied',
-    };
 };
 
 // Logic options management
@@ -90,9 +44,13 @@ const updateLogicOptions = () => {
 
 // Question management
 const addQuestion = () => {
-    const newQuestion = createQuestionWithType(QuestionType.REACTION);
-    const insertIndex = Math.max(0, questions.value.length - 1);
+    // Create a new question using the REACTION template as default
+    const newQuestion = {
+        ...INITIAL_QUESTIONS[QuestionType.REACTION],
+        id: crypto.randomUUID(), // Ensure unique ID
+    };
 
+    const insertIndex = Math.max(0, questions.value.length - 1);
     questions.value.splice(insertIndex, 0, newQuestion);
     updateLogicOptions();
 
@@ -128,9 +86,21 @@ const deleteAnswer = (questionId: string, answerId: string) => {
 const handleChange = (option: DropdownOption | null, index: number) => {
     if (!option) return;
 
-    const newQuestion = createQuestionWithType(option.id as QuestionType);
-    const insertIndex = Math.max(0, questions.value.length - 1);
+    const questionType = option.id as QuestionType;
+    const template = INITIAL_QUESTIONS[questionType];
 
+    if (!template) {
+        console.error(`No template found for question type: ${questionType}`);
+        return;
+    }
+
+    // Create new question from template with unique ID
+    const newQuestion = {
+        ...template,
+        id: crypto.randomUUID(),
+    };
+
+    const insertIndex = Math.max(0, questions.value.length - 1);
     questions.value.splice(insertIndex, 0, newQuestion);
     updateLogicOptions();
 
@@ -145,6 +115,14 @@ const handleChange = (option: DropdownOption | null, index: number) => {
 onMounted(() => {
     updateLogicOptions();
 });
+
+watch(
+    () => questions.value,
+    (questions) => {
+        console.log(questions);
+    },
+    { deep: true }
+);
 </script>
 
 <template>

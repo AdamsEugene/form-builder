@@ -1,3 +1,5 @@
+import type { SurveyData } from './survey';
+
 // types.ts
 export type PopoverPlacement = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'center';
 export type SidePlacement = 'left' | 'right';
@@ -32,7 +34,7 @@ export interface OtherProps extends BaseProps {
 
 export type Placement = SidePlacement | PopoverPlacement;
 
-export interface Survey {
+export interface Survey extends SurveyData {
     email: string;
     description: string;
     type: FeedbackTab;
