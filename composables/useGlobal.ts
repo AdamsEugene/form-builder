@@ -1,5 +1,6 @@
 import globalStore from '@/utils/indexedDB';
-import type { GlobalState, Survey } from '~/types';
+import { DEFAULT_COLORS } from '~/constants/colors';
+import type { ColorSettings, GlobalState, Survey } from '~/types';
 import type { Question } from '~/types/survey';
 
 // Simple JSON-based clone function
@@ -14,6 +15,7 @@ export const useGlobal = () => {
     const currentIndex = useState('current-index', () => 0);
     const survey = useState<Survey | null>('survey-data', () => null);
     const activeQuestion = useState<Question | null>('active-question', () => null);
+    const colors = useState<ColorSettings>('color-settings', () => ({ ...DEFAULT_COLORS }));
 
     // Initialize state from IndexedDB
     const initializeState = async () => {
@@ -24,10 +26,12 @@ export const useGlobal = () => {
                 isCollapsed.value = savedState.sidebarCollapsed ?? false;
                 isMiniCollapsed.value = savedState.miniSidebarCollapsed ?? false;
                 currentIndex.value = savedState.currentIndex ?? 0;
+                colors.value = savedState.colors
+                    ? { ...DEFAULT_COLORS, ...safeClone(savedState.colors) }
+                    : { ...DEFAULT_COLORS };
 
                 if (savedState.surveyData) {
                     survey.value = safeClone(savedState.surveyData);
-                    // Set active question to first question if exists
                     activeQuestion.value = savedState.surveyData.questions[0]
                         ? safeClone(savedState.surveyData.questions[0])
                         : null;
@@ -49,6 +53,7 @@ export const useGlobal = () => {
                 currentIndex: currentIndex.value,
                 surveyData: survey.value ? safeClone(toRaw(survey.value)) : null,
                 activeQuestion: activeQuestion.value ? safeClone(toRaw(activeQuestion.value)) : null,
+                colors: safeClone(toRaw(colors.value)),
             };
             await globalStore.setValue('general', currentState);
         } catch (err) {
@@ -105,6 +110,19 @@ export const useGlobal = () => {
         currentIndex.value = index;
     };
 
+    // New function to update colors partially
+    const setColors = (newColors: Partial<ColorSettings>) => {
+        colors.value = {
+            ...colors.value,
+            ...safeClone(toRaw(newColors)),
+        };
+    };
+
+    // Reset colors to defaults
+    const resetColors = () => {
+        colors.value = { ...DEFAULT_COLORS };
+    };
+
     const clearStorage = () => {
         survey.value = null;
         activeQuestion.value = null;
@@ -112,7 +130,7 @@ export const useGlobal = () => {
 
     // Watch for state changes and save to IndexedDB
     watch(
-        [isCollapsed, isMiniCollapsed, survey, currentIndex, activeQuestion],
+        [isCollapsed, isMiniCollapsed, survey, currentIndex, activeQuestion, colors],
         async () => {
             await saveState();
         },
@@ -123,8 +141,11 @@ export const useGlobal = () => {
         isCollapsed: readonly(isCollapsed),
         isMiniCollapsed: readonly(isMiniCollapsed),
         currentIndex: readonly(currentIndex),
-        survey: survey,
-        activeQuestion: activeQuestion,
+        colors: readonly(colors),
+        setColors,
+        resetColors,
+        survey,
+        activeQuestion,
         toggleSidebar,
         toggleMiniSidebar,
         setSurvey,

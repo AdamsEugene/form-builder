@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { getColorName } from '~/constants/colors';
+
 interface Props {
     modelValue: string;
     label?: string;
@@ -123,7 +125,7 @@ watch(
             <button
                 v-for="color in predefinedColors"
                 :key="color"
-                class="w-8 h-8 rounded-full border-2 border-transparent cursor-pointer transition-all hover:border-gray-300 relative"
+                class="w-8 h-8 rounded-full border-2 border-transparent shadow-lg cursor-pointer transition-all hover:border-gray-300 relative"
                 :class="{ 'ring-2 ring-blue-500 ring-offset-2': selectedColor === color }"
                 :style="{ backgroundColor: color }"
                 @mouseenter="showTooltip($event, color)"
@@ -169,7 +171,7 @@ watch(
                 class="fixed z-50 px-2 py-1 text-xs text-white bg-gray-800 dark:bg-gray-700 rounded shadow-lg pointer-events-none"
                 :style="tooltipStyle"
             >
-                {{ hoveredColor }}
+                {{ getColorName(hoveredColor) }}
             </div>
         </Transition>
     </div>

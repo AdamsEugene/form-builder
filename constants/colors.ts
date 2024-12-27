@@ -1,3 +1,5 @@
+import type { ColorSettings } from "~/types";
+
 // constants/colors.ts
 export const surveyColors = {
     // Background colors - Light and neutral tones
@@ -113,4 +115,16 @@ export const getColorName = (color: string): string => {
     };
 
     return colorMap[color] || color;
+};
+
+// Default color settings
+export const DEFAULT_COLORS: ColorSettings = {
+    backgroundColor: '#FFFFFF',
+    questionColor: '#1E293B',
+    labelColor: '#475569',
+    emojiBackgroundColor: '#EFF6FF',
+    emojiHoverColor: '#DBEAFE',
+    emojiActiveColor: '#BFDBFE',
+    nextButtonTextColor: '#FFFFFF',
+    nextButtonBgColor: '#3B82F6'
 };

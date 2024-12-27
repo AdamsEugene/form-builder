@@ -40,12 +40,24 @@ export interface Survey extends SurveyData {
     type: FeedbackTab;
 }
 
+export interface ColorSettings {
+    backgroundColor: string;
+    questionColor: string;
+    labelColor: string;
+    emojiBackgroundColor: string;
+    emojiHoverColor: string;
+    emojiActiveColor: string;
+    nextButtonTextColor: string;
+    nextButtonBgColor: string;
+}
+
 export interface GlobalState {
     sidebarCollapsed: boolean;
     miniSidebarCollapsed: boolean;
     surveyData: Survey | null;
     currentIndex: number;
     activeQuestion: Question | null;
+    colors: ColorSettings;
 }
 
 export interface Color {
