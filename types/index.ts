@@ -53,3 +53,6 @@ export interface Color {
     name: string;
     value: string;
 }
+
+export type BorderRadius = 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full' | 'custom';
+export type Padding = 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'custom';
