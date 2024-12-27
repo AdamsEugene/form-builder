@@ -1,13 +1,12 @@
 // components/settings/ColorSettings.vue
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, computed } from 'vue';
 import { ArrowRight } from 'lucide-vue-next';
 import { surveyColors } from '~/constants/colors';
 import type { BorderRadius, Padding, Placement } from '~/types';
+import { placementConfigs } from '~/constants/placement';
 
-const { colors, setColors } = useGlobal();
-
-const sidePlacements: Placement[] = ['left', 'right'];
+const { colors, setColors, survey, position, setPosition } = useGlobal();
 
 // Initialize with refs
 const backgroundColor = ref('');
@@ -19,7 +18,6 @@ const emojiActiveColor = ref('');
 const nextButtonBgColor = ref('');
 const nextButtonTextColor = ref('');
 
-const position = ref<'left' | 'right'>('right');
 const borderRadius = ref<BorderRadius>('md');
 const customBorderRadius = ref('8px');
 const padding = ref<Padding>('md');
@@ -35,6 +33,82 @@ onMounted(() => {
     emojiActiveColor.value = colors.value.emojiActiveColor;
     nextButtonBgColor.value = colors.value.nextButtonBgColor;
     nextButtonTextColor.value = colors.value.nextButtonTextColor;
+
+    if (position.value) {
+        borderRadius.value = getBorderRadiusPreset(position.value.borderRadius);
+        customBorderRadius.value = position.value.borderRadius;
+        padding.value = getPaddingPreset(position.value.padding);
+        customPadding.value = position.value.padding;
+    }
+});
+
+// Helper functions to determine presets
+function getBorderRadiusPreset(value: string): BorderRadius {
+    switch (value) {
+        case '0px':
+            return 'none';
+        case '4px':
+            return 'sm';
+        case '8px':
+            return 'md';
+        case '12px':
+            return 'lg';
+        case '16px':
+            return 'xl';
+        case '9999px':
+            return 'full';
+        default:
+            return 'custom';
+    }
+}
+
+function getPaddingPreset(value: string): Padding {
+    switch (value) {
+        case '0px':
+            return 'none';
+        case '8px':
+            return 'sm';
+        case '16px':
+            return 'md';
+        case '24px':
+            return 'lg';
+        case '32px':
+            return 'xl';
+        default:
+            return 'custom';
+    }
+}
+
+// Computed for current placement configuration
+const currentPlacementConfig = computed(() => {
+    return placementConfigs(survey.value?.type ?? 'popover');
+});
+
+// Handle placement changes
+const handlePlacementChange = (newPlacement: Placement) => {
+    setPosition({
+        placement: newPlacement,
+        borderRadius: previewBorderRadius.value,
+        padding: previewPadding.value,
+    });
+};
+
+// Watch for border radius changes
+watch([borderRadius, customBorderRadius], () => {
+    setPosition({
+        borderRadius: previewBorderRadius.value,
+        placement: position.value.placement,
+        padding: position.value.padding,
+    });
+});
+
+// Watch for padding changes
+watch([padding, customPadding], () => {
+    setPosition({
+        padding: previewPadding.value,
+        placement: position.value.placement,
+        borderRadius: position.value.borderRadius,
+    });
 });
 
 // Watch for changes in individual color refs
@@ -174,7 +248,11 @@ const handleNext = () => {
                     :predefinedColors="surveyColors.nextButtonTextColor"
                     label="Next button text color"
                 />
-                <SharedPositionSelector v-model="position" :available-placements="sidePlacements" />
+                <SharedPositionSelector
+                    :modelValue="position.placement"
+                    :available-placements="currentPlacementConfig.availablePlacements"
+                    @update:modelValue="handlePlacementChange"
+                />
 
                 <div class="flex gap-8 items-center">
                     <div class="flex flex-col gap-8">

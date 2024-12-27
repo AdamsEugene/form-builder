@@ -1,6 +1,6 @@
 import globalStore from '@/utils/indexedDB';
-import { DEFAULT_COLORS } from '~/constants/colors';
-import type { ColorSettings, GlobalState, Survey } from '~/types';
+import { DEFAULT_COLORS, DEFAULT_POSITION } from '~/constants/colors';
+import type { AlignmentSetting, ColorSettings, GlobalState, Survey } from '~/types';
 import type { Question } from '~/types/survey';
 
 // Simple JSON-based clone function
@@ -16,6 +16,7 @@ export const useGlobal = () => {
     const survey = useState<Survey | null>('survey-data', () => null);
     const activeQuestion = useState<Question | null>('active-question', () => null);
     const colors = useState<ColorSettings>('color-settings', () => ({ ...DEFAULT_COLORS }));
+    const position = useState<AlignmentSetting>('position-settings', () => ({ ...DEFAULT_POSITION }));
 
     // Initialize state from IndexedDB
     const initializeState = async () => {
@@ -29,6 +30,9 @@ export const useGlobal = () => {
                 colors.value = savedState.colors
                     ? { ...DEFAULT_COLORS, ...safeClone(savedState.colors) }
                     : { ...DEFAULT_COLORS };
+                position.value = savedState.position
+                    ? { ...DEFAULT_POSITION, ...safeClone(savedState.position) }
+                    : { ...DEFAULT_POSITION };
 
                 if (savedState.surveyData) {
                     survey.value = safeClone(savedState.surveyData);
@@ -54,6 +58,7 @@ export const useGlobal = () => {
                 surveyData: survey.value ? safeClone(toRaw(survey.value)) : null,
                 activeQuestion: activeQuestion.value ? safeClone(toRaw(activeQuestion.value)) : null,
                 colors: safeClone(toRaw(colors.value)),
+                position: safeClone(toRaw(position.value)),
             };
             await globalStore.setValue('general', currentState);
         } catch (err) {
@@ -123,6 +128,17 @@ export const useGlobal = () => {
         colors.value = { ...DEFAULT_COLORS };
     };
 
+    const setPosition = (newPosition: Partial<AlignmentSetting>) => {
+        position.value = {
+            ...position.value,
+            ...safeClone(toRaw(newPosition)),
+        };
+    };
+
+    const resetPosition = () => {
+        position.value = { ...DEFAULT_POSITION };
+    };
+
     const clearStorage = () => {
         survey.value = null;
         activeQuestion.value = null;
@@ -130,7 +146,7 @@ export const useGlobal = () => {
 
     // Watch for state changes and save to IndexedDB
     watch(
-        [isCollapsed, isMiniCollapsed, survey, currentIndex, activeQuestion, colors],
+        [isCollapsed, isMiniCollapsed, survey, currentIndex, activeQuestion, colors, position],
         async () => {
             await saveState();
         },
@@ -142,6 +158,9 @@ export const useGlobal = () => {
         isMiniCollapsed: readonly(isMiniCollapsed),
         currentIndex: readonly(currentIndex),
         colors: readonly(colors),
+        position: readonly(position),
+        setPosition,
+        resetPosition,
         setColors,
         resetColors,
         survey,

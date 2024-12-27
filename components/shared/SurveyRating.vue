@@ -5,11 +5,6 @@ import type { FeedbackTab, PopoverPlacement, SidePlacement } from '~/types';
 import { QuestionType, type Question } from '~/types/survey';
 import { type Reaction, isEmojiReaction, isIconReaction } from '@/utils/reactionType';
 
-interface EmojiRating {
-    emoji: string;
-    value: number;
-}
-
 type DeviceType = 'mobile' | 'desktop' | 'tablet';
 
 interface Props {

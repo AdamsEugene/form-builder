@@ -107,12 +107,17 @@ const handleChange = (option: DropdownOption | null, index: number) => {
         id: crypto.randomUUID(),
     };
 
-    questions.value.splice(index + 1, 0, newQuestion);
+    // Check if this is the last question
+    const isLastQuestion = index === questions.value.length - 1;
+
+    // If it's the last question, insert before it; otherwise, insert after
+    const insertIndex = isLastQuestion ? index : index + 1;
+    questions.value.splice(insertIndex, 0, newQuestion);
     updateLogicOptions();
 
     nextTick(() => {
         const elements = document.querySelectorAll('[data-question]');
-        const targetElement = elements[index + 1]; // Get the newly added question's element
+        const targetElement = elements[insertIndex]; // Get the newly added question's element
         if (targetElement) scrollToElement(targetElement);
     });
 };

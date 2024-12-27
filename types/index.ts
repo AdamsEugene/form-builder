@@ -51,6 +51,12 @@ export interface ColorSettings {
     nextButtonBgColor: string;
 }
 
+export interface AlignmentSetting {
+    borderRadius: string;
+    padding: string;
+    placement: Placement;
+}
+
 export interface GlobalState {
     sidebarCollapsed: boolean;
     miniSidebarCollapsed: boolean;
@@ -58,6 +64,7 @@ export interface GlobalState {
     currentIndex: number;
     activeQuestion: Question | null;
     colors: ColorSettings;
+    position: AlignmentSetting;
 }
 
 export interface Color {

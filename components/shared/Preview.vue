@@ -3,13 +3,13 @@
 import { ref, watch, computed } from 'vue';
 import SurveyRating from '@/components/shared/SurveyRating.vue';
 import FeedbackTab from '@/components/shared/FeedbackTab.vue';
-import type { FeedbackTab as FBT, Placement } from '~/types';
+import type { FeedbackTab as FBT } from '~/types';
 import { useGlobal } from '@/composables/useGlobal';
 import type { ReactionQuestion } from '~/types/survey';
 import { getReactionSet } from '@/utils/reactionType';
 import { ReactionType } from '~/types/survey';
 
-const { survey, activeQuestion, colors } = useGlobal();
+const { survey, activeQuestion, colors, position } = useGlobal();
 
 const rating = ref<number>(0);
 const deviceType = ref<'mobile' | 'desktop' | 'tablet'>('desktop');
@@ -26,23 +26,6 @@ const reactionType = computed(() => {
 
 // Get the appropriate reaction set based on the type
 const ratings = computed(() => getReactionSet(reactionType.value));
-
-const configs = (type: FBT): { placement: Placement } => {
-    switch (type) {
-        case 'popover':
-            return { placement: 'bottom-right' };
-        case 'button':
-            return { placement: 'right' };
-        case 'bubble':
-            return { placement: 'bottom-right' };
-        case 'embedded':
-            return { placement: 'bottom-right' };
-        case 'fullScreen':
-            return { placement: 'center' };
-        case 'link':
-            return { placement: 'center' };
-    }
-};
 
 const handleNext = () => {
     console.log('Selected rating:', rating.value);
@@ -61,7 +44,7 @@ watch(
         <!-- FeedbackTab with higher z-index -->
         <FeedbackTab
             v-model="isOpen"
-            :placement="configs(feedbackType).placement"
+            :placement="position.placement"
             content-width="max-content"
             :device-type="deviceType"
             :feedback-type="feedbackType"
@@ -73,7 +56,7 @@ watch(
                 :device-type="deviceType"
                 v-model:isOpen="isOpen"
                 :feedback-type="feedbackType"
-                :placement="configs(feedbackType).placement"
+                :placement="position.placement"
                 :question="activeQuestion"
                 :ratings="ratings"
                 nextButtonText="Submit"
@@ -85,6 +68,8 @@ watch(
                 :emojiActiveColor="colors.emojiActiveColor"
                 :nextButtonBgColor="colors.nextButtonBgColor"
                 :nextButtonTextColor="colors.nextButtonTextColor"
+                :padding="position.padding"
+                :border-radius="position.borderRadius"
                 @next="handleNext"
             />
         </FeedbackTab>

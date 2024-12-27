@@ -1,4 +1,4 @@
-import type { ColorSettings } from "~/types";
+import type { AlignmentSetting, ColorSettings } from '~/types';
 
 // constants/colors.ts
 export const surveyColors = {
@@ -126,5 +126,11 @@ export const DEFAULT_COLORS: ColorSettings = {
     emojiHoverColor: '#DBEAFE',
     emojiActiveColor: '#BFDBFE',
     nextButtonTextColor: '#FFFFFF',
-    nextButtonBgColor: '#3B82F6'
+    nextButtonBgColor: '#3B82F6',
+};
+
+export const DEFAULT_POSITION: AlignmentSetting = {
+    borderRadius: '8px',
+    padding: '16px',
+    placement: 'right',
 };
