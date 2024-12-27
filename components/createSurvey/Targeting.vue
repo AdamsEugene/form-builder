@@ -97,7 +97,7 @@ const handleDeviceChange = (device: string) => {
                     <label class="flex items-center gap-3 cursor-pointer">
                         <UiBaseRadio v-model="settings.pageType" name="pages" value="specific" />
                         <span class="text-sm text-gray-700 dark:text-gray-300">Specific pages or events</span>
-                        <UiBaseBadge variant="secondary" size="sm">BUSINESS</UiBaseBadge>
+                        <UiBaseBadge variant="primary" size="sm">BUSINESS</UiBaseBadge>
                     </label>
                 </div>
             </section>
@@ -115,7 +115,7 @@ const handleDeviceChange = (device: string) => {
                     <label class="flex items-center gap-3 cursor-pointer">
                         <UiBaseRadio v-model="settings.userType" name="users" value="specific" />
                         <span class="text-sm text-gray-700 dark:text-gray-300">Specific users</span>
-                        <UiBaseBadge variant="secondary" size="sm">BUSINESS</UiBaseBadge>
+                        <UiBaseBadge variant="primary" size="sm">BUSINESS</UiBaseBadge>
                     </label>
                 </div>
             </section>
@@ -138,7 +138,7 @@ const handleDeviceChange = (device: string) => {
                 <div class="flex items-center gap-2">
                     <UiBaseInput v-model="settings.trafficCoverage" type="number" min="0" max="100" class="w-24" />
                     <span class="text-sm text-gray-700 dark:text-gray-300">%</span>
-                    <UiBaseBadge variant="secondary" size="sm">PLUS</UiBaseBadge>
+                    <UiBaseBadge variant="primary" size="sm">PLUS</UiBaseBadge>
                 </div>
             </section>
 

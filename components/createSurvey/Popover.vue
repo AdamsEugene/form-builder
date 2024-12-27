@@ -122,6 +122,6 @@ watch(
                 </button>
             </div>
         </div>
-        <BaseButton size="md">Next <ArrowRight /></BaseButton>
+        <BaseButton size="md" class="w-max self-end">Next <ArrowRight /></BaseButton>
     </div>
 </template>

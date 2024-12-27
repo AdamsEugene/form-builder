@@ -212,7 +212,7 @@ const handleNext = () => {
             class="bg-white w-full dark:bg-gray-800 flex flex-col gap-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-shadow"
         >
             <div class="flex flex-col gap-8">
-                <div class="grid grid-cols-2 gap-1 bg-gray-200 p-1 rounded-2xl">
+                <div class="grid grid-cols-2 gap-1 bg-gray-50 p-1 rounded-2xl">
                     <div class="bg-white shadow-sm p-1 rounded-2xl">
                         <UiColorPicker
                             v-model="backgroundColor"
@@ -276,8 +276,8 @@ const handleNext = () => {
                     @update:modelValue="handlePlacementChange"
                 />
 
-                <div class="flex gap-8 items-center">
-                    <div class="flex flex-col gap-8">
+                <div class="flex flex-col gap-8">
+                    <div class="grid grid-cols-2 gap-8">
                         <SharedBorderRadiusControl v-model="borderRadius" v-model:customValue="customBorderRadius" />
                         <SharedPaddingControl v-model="padding" v-model:customValue="customPadding" />
                     </div>
