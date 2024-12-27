@@ -212,42 +212,64 @@ const handleNext = () => {
             class="bg-white w-full dark:bg-gray-800 flex flex-col gap-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-shadow"
         >
             <div class="flex flex-col gap-8">
-                <UiColorPicker
-                    v-model="backgroundColor"
-                    :predefinedColors="surveyColors.backgroundColor"
-                    label="Background color"
-                />
-                <UiColorPicker
-                    v-model="questionColor"
-                    :predefinedColors="surveyColors.questionColor"
-                    label="Question color"
-                />
-                <UiColorPicker v-model="labelColor" :predefinedColors="surveyColors.labelColor" label="Label color" />
-                <UiColorPicker
-                    v-model="emojiBackgroundColor"
-                    :predefinedColors="surveyColors.emojiBackgroundColor"
-                    label="Emoji background color"
-                />
-                <UiColorPicker
-                    v-model="emojiHoverColor"
-                    :predefinedColors="surveyColors.emojiHoverColor"
-                    label="Emoji hover color"
-                />
-                <UiColorPicker
-                    v-model="emojiActiveColor"
-                    :predefinedColors="surveyColors.emojiActiveColor"
-                    label="Emoji active color"
-                />
-                <UiColorPicker
-                    v-model="nextButtonBgColor"
-                    :predefinedColors="surveyColors.nextButtonBgColor"
-                    label="Next button background color"
-                />
-                <UiColorPicker
-                    v-model="nextButtonTextColor"
-                    :predefinedColors="surveyColors.nextButtonTextColor"
-                    label="Next button text color"
-                />
+                <div class="grid grid-cols-2 gap-1 bg-gray-200 p-1 rounded-2xl">
+                    <div class="bg-white shadow-sm p-1 rounded-2xl">
+                        <UiColorPicker
+                            v-model="backgroundColor"
+                            :predefinedColors="surveyColors.backgroundColor"
+                            label="Background color"
+                        />
+                    </div>
+                    <div class="bg-white shadow-sm p-1 rounded-2xl">
+                        <UiColorPicker
+                            v-model="questionColor"
+                            :predefinedColors="surveyColors.questionColor"
+                            label="Question color"
+                        />
+                    </div>
+                    <div class="bg-white shadow-sm p-1 rounded-2xl">
+                        <UiColorPicker
+                            v-model="labelColor"
+                            :predefinedColors="surveyColors.labelColor"
+                            label="Label color"
+                        />
+                    </div>
+                    <div class="bg-white shadow-sm p-1 rounded-2xl">
+                        <UiColorPicker
+                            v-model="emojiBackgroundColor"
+                            :predefinedColors="surveyColors.emojiBackgroundColor"
+                            label="Emoji background color"
+                        />
+                    </div>
+                    <div class="bg-white shadow-sm p-1 rounded-2xl">
+                        <UiColorPicker
+                            v-model="emojiHoverColor"
+                            :predefinedColors="surveyColors.emojiHoverColor"
+                            label="Emoji hover color"
+                        />
+                    </div>
+                    <div class="bg-white shadow-sm p-1 rounded-2xl">
+                        <UiColorPicker
+                            v-model="emojiActiveColor"
+                            :predefinedColors="surveyColors.emojiActiveColor"
+                            label="Emoji active color"
+                        />
+                    </div>
+                    <div class="bg-white shadow-sm p-1 rounded-2xl">
+                        <UiColorPicker
+                            v-model="nextButtonBgColor"
+                            :predefinedColors="surveyColors.nextButtonBgColor"
+                            label="Next button background color"
+                        />
+                    </div>
+                    <div class="bg-white shadow-sm p-1 rounded-2xl">
+                        <UiColorPicker
+                            v-model="nextButtonTextColor"
+                            :predefinedColors="surveyColors.nextButtonTextColor"
+                            label="Next button text color"
+                        />
+                    </div>
+                </div>
                 <SharedPositionSelector
                     :modelValue="position.placement"
                     :available-placements="currentPlacementConfig.availablePlacements"
