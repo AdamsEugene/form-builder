@@ -209,7 +209,7 @@ const handleNext = () => {
 <template>
     <div class="flex flex-col gap-8">
         <div
-            class="bg-white w-full dark:bg-gray-800 flex flex-col gap-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow"
+            class="bg-white w-full dark:bg-gray-800 flex flex-col gap-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-shadow"
         >
             <div class="flex flex-col gap-8">
                 <UiColorPicker
