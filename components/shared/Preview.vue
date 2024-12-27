@@ -1,3 +1,4 @@
+// components/SurveyPreview.vue
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
 import SurveyRating from '@/components/shared/SurveyRating.vue';
@@ -8,7 +9,7 @@ import type { ReactionQuestion } from '~/types/survey';
 import { getReactionSet } from '@/utils/reactionType';
 import { ReactionType } from '~/types/survey';
 
-const { survey, activeQuestion } = useGlobal();
+const { survey, activeQuestion, colors } = useGlobal();
 
 const rating = ref<number>(0);
 const deviceType = ref<'mobile' | 'desktop' | 'tablet'>('desktop');
@@ -76,8 +77,15 @@ watch(
                 :question="activeQuestion"
                 :ratings="ratings"
                 nextButtonText="Submit"
+                :backgroundColor="colors.backgroundColor"
+                :questionColor="colors.questionColor"
+                :labelColor="colors.labelColor"
+                :emojiBackgroundColor="colors.emojiBackgroundColor"
+                :emojiHoverColor="colors.emojiHoverColor"
+                :emojiActiveColor="colors.emojiActiveColor"
+                :nextButtonBgColor="colors.nextButtonBgColor"
+                :nextButtonTextColor="colors.nextButtonTextColor"
                 @next="handleNext"
-                background-color=""
             />
         </FeedbackTab>
 
