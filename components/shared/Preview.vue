@@ -1,4 +1,3 @@
-// components/SurveyPreview.vue
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
 import SurveyRating from '@/components/shared/SurveyRating.vue';
