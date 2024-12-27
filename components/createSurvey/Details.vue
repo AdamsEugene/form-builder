@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { Color } from '~/types';
 import FormInput from '../ui/FormInput.vue';
 import FormTextarea from '../ui/FormTextarea.vue';
 import { useGlobal } from '@/composables/useGlobal';
@@ -40,6 +41,25 @@ const isSelected = ref(false);
 const isDisabled = ref(false);
 
 const selectedOption = ref('option1');
+
+const defaultColors: Color[] = [
+    { id: '1', name: 'Ruby Red', value: '#E0115F' },
+    { id: '2', name: 'Sapphire Blue', value: '#0F52BA' },
+    { id: '3', name: 'Emerald Green', value: '#50C878' },
+    { id: '4', name: 'Royal Purple', value: '#7851A9' },
+    { id: '5', name: 'Sunset Orange', value: '#FD5E53' },
+    { id: '6', name: 'Ocean Blue', value: '#2E8BC0' },
+];
+
+const selectedColor = ref('');
+
+const handleColorAdded = (color: Color) => {
+    console.log('New color added:', color);
+};
+
+const handleColorRemoved = (colorId: string) => {
+    console.log('Color removed:', colorId);
+};
 </script>
 
 <template>
@@ -174,6 +194,15 @@ const selectedOption = ref('option1');
 
             <!-- Disabled option -->
             <UiBasePillRadio v-model="selectedOption" name="options" value="option4" label="Disabled option" disabled />
+        </div>
+
+        <div class="container mx-auto p-4">
+            <div class="p-4">
+                <UiColorPicker v-model="selectedColor" />
+                <div v-if="selectedColor" class="mt-4" :style="{ color: selectedColor }">
+                    Selected color: {{ selectedColor }}
+                </div>
+            </div>
         </div>
     </div>
 </template>

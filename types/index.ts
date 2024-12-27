@@ -47,3 +47,9 @@ export interface GlobalState {
     currentIndex: number;
     activeQuestion: Question | null;
 }
+
+export interface Color {
+    id: string;
+    name: string;
+    value: string;
+}
