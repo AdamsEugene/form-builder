@@ -3,6 +3,7 @@ import type { CSSProperties } from 'vue';
 import { ChevronUp, ChevronDown, X } from 'lucide-vue-next';
 import type { FeedbackTab, PopoverPlacement, SidePlacement } from '~/types';
 import { QuestionType, type Question } from '~/types/survey';
+import { type Reaction, isEmojiReaction, isIconReaction } from '@/utils/reactionType';
 
 interface EmojiRating {
     emoji: string;
@@ -18,14 +19,12 @@ interface Props {
 
     // Rating configuration
     modelValue: number | null;
-    ratings?: EmojiRating[];
+    ratings?: Reaction[];
 
-    // Placement and visibility
+    // Rest of the props remain the same
     placement?: SidePlacement | PopoverPlacement;
     isOpen?: boolean;
     deviceType?: DeviceType;
-
-    // Colors
     backgroundColor?: string;
     questionColor?: string;
     labelColor?: string;
@@ -34,14 +33,10 @@ interface Props {
     emojiActiveColor?: string;
     nextButtonBgColor?: string;
     nextButtonTextColor?: string;
-
-    // Styling
     maxWidth?: string;
     borderRadius?: string;
     padding?: string;
     gap?: string;
-
-    // Button configuration
     showNextButton?: boolean;
     nextButtonDisabled?: boolean;
     feedbackType?: FeedbackTab;
@@ -53,7 +48,7 @@ const props = withDefaults(defineProps<Props>(), {
     nextButtonText: 'Next',
     modelValue: null,
 
-    // Default configuration
+    // Default ratings now come from parent component
     ratings: () => [
         { emoji: '😠', value: 1 },
         { emoji: '☹️', value: 2 },
@@ -62,11 +57,9 @@ const props = withDefaults(defineProps<Props>(), {
         { emoji: '😍', value: 5 },
     ],
 
-    // Default placement and visibility
+    // Rest of the defaults remain the same
     isOpen: true,
     deviceType: 'desktop',
-
-    // Default colors
     backgroundColor: 'white',
     questionColor: '#000000',
     labelColor: '#666666',
@@ -75,14 +68,10 @@ const props = withDefaults(defineProps<Props>(), {
     emojiActiveColor: '#FFA500',
     nextButtonBgColor: '#F3F4F6',
     nextButtonTextColor: '#4B5563',
-
-    // Default styling
     maxWidth: '400px',
     borderRadius: '8px',
     padding: '24px',
     gap: '20px',
-
-    // Default button configuration
     showNextButton: true,
     nextButtonDisabled: false,
 });
@@ -95,8 +84,6 @@ const emit = defineEmits<{
 }>();
 
 const textAnswer = ref('');
-const selectedOption = ref('option1');
-const isSelected = ref(false);
 const value = ref(5);
 // Computed styles based on device type and placement
 const containerStyles = computed<CSSProperties>(() => {
@@ -158,7 +145,7 @@ const handleClick = () => {
 
         <!-- Rating Section -->
         <div class="space-y-6 truncate">
-            <!-- Emojis -->
+            <!-- Updated Emojis/Reactions section -->
             <div
                 v-if="question?.type === QuestionType.REACTION"
                 class="flex justify-between items-center"
@@ -177,7 +164,10 @@ const handleClick = () => {
                         }"
                         :style="getEmojiContainerStyle(rating.value)"
                     >
-                        {{ rating.emoji }}
+                        <template v-if="isEmojiReaction(rating)">
+                            {{ rating.emoji }}
+                        </template>
+                        <component v-else-if="isIconReaction(rating)" :is="rating.component" v-bind="rating.props" />
                     </div>
                 </div>
             </div>

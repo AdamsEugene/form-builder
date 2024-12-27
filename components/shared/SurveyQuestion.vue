@@ -195,6 +195,7 @@ watch(
                             :key="type.id"
                             class="px-3 py-1.5 rounded-2xl border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2"
                             :class="{ 'border-primary-500': question.reactionType === type.id }"
+                            @mouseenter="question.reactionType = type.id"
                             @click="question.reactionType = type.id"
                         >
                             <span class="text-lg">{{ type.icon }}</span>

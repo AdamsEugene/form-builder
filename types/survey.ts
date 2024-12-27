@@ -52,7 +52,7 @@ interface BaseQuestion {
 }
 
 // Reaction Question
-interface ReactionQuestion extends BaseQuestion {
+export interface ReactionQuestion extends BaseQuestion {
     type: QuestionType.REACTION;
     reactionType: ReactionType;
     lowScoreLabel: string;

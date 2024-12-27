@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import SurveyRating from '@/components/shared/SurveyRating.vue';
 import FeedbackTab from '@/components/shared/FeedbackTab.vue';
 import type { FeedbackTab as FBT, Placement } from '~/types';
-import { useGlobal } from '@/composables/useGlobal'; // Assuming this is the correct path
+import { useGlobal } from '@/composables/useGlobal';
+import type { ReactionQuestion } from '~/types/survey';
+import { getReactionSet } from '@/utils/reactionType';
+import { ReactionType } from '~/types/survey';
 
 const { survey, activeQuestion } = useGlobal();
 
@@ -12,13 +15,16 @@ const deviceType = ref<'mobile' | 'desktop' | 'tablet'>('desktop');
 const feedbackType = ref<FBT>(survey.value?.type || 'popover');
 const isOpen = ref(true);
 
-const customRatings = [
-    { emoji: '😡', value: 1 },
-    { emoji: '😕', value: 2 },
-    { emoji: '😐', value: 3 },
-    { emoji: '😊', value: 4 },
-    { emoji: '🥰', value: 5 },
-];
+// Get the reaction type from the active question and compute the ratings
+const reactionType = computed(() => {
+    if (activeQuestion.value && 'reactionType' in activeQuestion.value) {
+        return (activeQuestion.value as ReactionQuestion).reactionType;
+    }
+    return ReactionType.SMILEYS; // default fallback
+});
+
+// Get the appropriate reaction set based on the type
+const ratings = computed(() => getReactionSet(reactionType.value));
 
 const configs = (type: FBT): { placement: Placement } => {
     switch (type) {
@@ -68,7 +74,7 @@ watch(
                 :feedback-type="feedbackType"
                 :placement="configs(feedbackType).placement"
                 :question="activeQuestion"
-                :ratings="customRatings"
+                :ratings="ratings"
                 nextButtonText="Submit"
                 @next="handleNext"
                 background-color=""
