@@ -4,6 +4,7 @@ import type { Question, SurveyData } from './survey';
 export type PopoverPlacement = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'center';
 export type SidePlacement = 'left' | 'right';
 export type FeedbackTab = 'popover' | 'button' | 'bubble' | 'embedded' | 'fullScreen' | 'link';
+export type DeviceType = 'desktop' | 'mobile' | 'tablet';
 
 // Create separate props interfaces for each type
 interface BaseProps {
@@ -57,6 +58,101 @@ export interface AlignmentSetting {
     placement: Placement;
 }
 
+export interface Targeting {
+    devices: DeviceType[];
+    pageType: 'all' | 'specific';
+    userType: 'all' | 'specific';
+    trafficCoverage: number;
+}
+
+export interface Behavior {
+    reuseBehavior: boolean;
+    timing: 'immediate' | 'delay' | 'abandon' | 'scroll';
+    frequency: 'untilSubmit' | 'once' | 'always';
+    includeScreenshot: boolean;
+}
+
+interface BaseChannel {
+    sendScreenshot?: boolean;
+    sendMetadata?: boolean;
+}
+
+export interface SlackConfig extends BaseChannel {
+    channel: string;
+}
+
+export interface TeamsConfig extends BaseChannel {
+    channel: string;
+}
+
+export interface WebhookConfig {
+    url: string;
+    method: 'POST' | 'PUT';
+    headers: Record<string, string>;
+}
+
+export interface EmailConfig {
+    recipients: string;
+    subject: string;
+    includeMetadata: boolean;
+}
+
+export interface ApiConfig {
+    endpoint: string;
+    apiKey: string;
+    format: 'JSON' | 'XML';
+}
+
+export interface ZapierConfig {
+    zapId: string;
+    triggerUrl: string;
+}
+
+export interface ExcelConfig {
+    spreadsheetId: string;
+    sheetName: string;
+    autoCreate: boolean;
+}
+
+export interface TrelloConfig {
+    boardId: string;
+    listId: string;
+    labels: string[];
+}
+
+export interface MiroConfig {
+    boardId: string;
+    frameId: string;
+}
+
+export interface ForwardResponse {
+    enabled: boolean;
+    integrations: {
+        slack?: SlackConfig;
+        teams?: TeamsConfig;
+        webhooks?: WebhookConfig;
+        email?: EmailConfig;
+        responsesApi?: ApiConfig;
+        zapier?: ZapierConfig;
+        excel?: ExcelConfig;
+        trello?: TrelloConfig;
+        miro?: MiroConfig;
+    };
+    // Global settings that apply to all enabled integrations
+    globalSettings?: {
+        includeUserMetadata: boolean;
+        includeBrowserInfo: boolean;
+        includeTimestamp: boolean;
+        includePageUrl: boolean;
+    };
+}
+
+export interface SurveySettings {
+    targeting: Targeting;
+    behavior: Behavior;
+    forwardResponse: ForwardResponse;
+}
+
 export interface GlobalState {
     sidebarCollapsed: boolean;
     miniSidebarCollapsed: boolean;
@@ -65,6 +161,7 @@ export interface GlobalState {
     activeQuestion: Question | null;
     colors: ColorSettings;
     position: AlignmentSetting;
+    surveySettings: Partial<SurveySettings> | null;
 }
 
 export interface Color {

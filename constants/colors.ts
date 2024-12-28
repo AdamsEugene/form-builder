@@ -132,5 +132,5 @@ export const DEFAULT_COLORS: ColorSettings = {
 export const DEFAULT_POSITION: AlignmentSetting = {
     borderRadius: '8px',
     padding: '16px',
-    placement: 'right',
+    placement: 'bottom-right',
 };

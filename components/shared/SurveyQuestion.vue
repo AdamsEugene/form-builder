@@ -2,7 +2,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Image, MessageCircle, Plus, Trash2 } from 'lucide-vue-next';
-import { QuestionType, questionTypes, ReactionType, type DropdownOption, type Question } from '~/types/survey';
+import { QuestionType, ReactionType, type DropdownOption, type Question } from '~/types/survey';
+import { questionTypes } from '~/constants/question';
 
 interface Props {
     modelValue: Question;

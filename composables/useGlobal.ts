@@ -1,6 +1,6 @@
 import globalStore from '@/utils/indexedDB';
 import { DEFAULT_COLORS, DEFAULT_POSITION } from '~/constants/colors';
-import type { AlignmentSetting, ColorSettings, GlobalState, Survey } from '~/types';
+import type { AlignmentSetting, ColorSettings, GlobalState, Survey, SurveySettings } from '~/types';
 import type { Question } from '~/types/survey';
 
 // Simple JSON-based clone function
@@ -17,6 +17,7 @@ export const useGlobal = () => {
     const activeQuestion = useState<Question | null>('active-question', () => null);
     const colors = useState<ColorSettings>('color-settings', () => ({ ...DEFAULT_COLORS }));
     const position = useState<AlignmentSetting>('position-settings', () => ({ ...DEFAULT_POSITION }));
+    const surveySettings = useState<Partial<SurveySettings> | null>('survey-settings', () => null);
 
     // Initialize state from IndexedDB
     const initializeState = async () => {
@@ -33,6 +34,7 @@ export const useGlobal = () => {
                 position.value = savedState.position
                     ? { ...DEFAULT_POSITION, ...safeClone(savedState.position) }
                     : { ...DEFAULT_POSITION };
+                surveySettings.value = savedState.surveySettings ? safeClone(savedState.surveySettings) : null;
 
                 if (savedState.surveyData) {
                     survey.value = safeClone(savedState.surveyData);
@@ -59,6 +61,7 @@ export const useGlobal = () => {
                 activeQuestion: activeQuestion.value ? safeClone(toRaw(activeQuestion.value)) : null,
                 colors: safeClone(toRaw(colors.value)),
                 position: safeClone(toRaw(position.value)),
+                surveySettings: surveySettings.value ? safeClone(toRaw(surveySettings.value)) : null,
             };
             await globalStore.setValue('general', currentState);
         } catch (err) {
@@ -139,14 +142,42 @@ export const useGlobal = () => {
         position.value = { ...DEFAULT_POSITION };
     };
 
+    // Function to update survey settings
+    const setSurveySettings = (settings: Partial<SurveySettings>) => {
+        surveySettings.value = settings
+            ? {
+                  ...surveySettings.value,
+                  ...safeClone(toRaw(settings)),
+              }
+            : null;
+    };
+
+    // Function to update specific parts of survey settings
+    const updateSurveySettings = (path: keyof SurveySettings, value: any) => {
+        if (!surveySettings.value) {
+            surveySettings.value = {};
+        }
+        surveySettings.value = {
+            ...surveySettings.value,
+            [path]: safeClone(toRaw(value)),
+        };
+    };
+
+    const resetSurveySettings = () => {
+        surveySettings.value = null;
+    };
+
     const clearStorage = () => {
         survey.value = null;
         activeQuestion.value = null;
+        surveySettings.value = null;
+        resetColors();
+        resetPosition();
     };
 
     // Watch for state changes and save to IndexedDB
     watch(
-        [isCollapsed, isMiniCollapsed, survey, currentIndex, activeQuestion, colors, position],
+        [isCollapsed, isMiniCollapsed, survey, currentIndex, activeQuestion, colors, position, surveySettings],
         async () => {
             await saveState();
         },
@@ -159,6 +190,7 @@ export const useGlobal = () => {
         currentIndex: readonly(currentIndex),
         colors: readonly(colors),
         position: readonly(position),
+        surveySettings: surveySettings,
         setPosition,
         resetPosition,
         setColors,
@@ -172,6 +204,9 @@ export const useGlobal = () => {
         updateMiniSidebarState,
         updateCurrentIndex,
         setActiveQuestion,
+        setSurveySettings,
+        updateSurveySettings,
+        resetSurveySettings,
         clearStorage,
     };
 };

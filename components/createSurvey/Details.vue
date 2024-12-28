@@ -67,12 +67,9 @@ const handleColorRemoved = (colorId: string) => {
         <FormInput
             v-model="email"
             label="Email Address"
-            type="search"
             placeholder="Enter your email"
             helper="We'll never share your email"
             required
-            leftIcon="i-heroicons-envelope"
-            :size="'sm'"
             :error="emailError"
         />
 

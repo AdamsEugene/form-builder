@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import type { CSSProperties } from 'vue';
 import { ChevronUp, ChevronDown, X } from 'lucide-vue-next';
-import type { FeedbackTab, PopoverPlacement, SidePlacement } from '~/types';
+import type { DeviceType, FeedbackTab, PopoverPlacement, SidePlacement } from '~/types';
 import { QuestionType, type Question } from '~/types/survey';
 import { type Reaction, isEmojiReaction, isIconReaction } from '@/utils/reactionType';
 
-type DeviceType = 'mobile' | 'desktop' | 'tablet';
 
 interface Props {
     // Content

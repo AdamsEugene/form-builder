@@ -1,9 +1,11 @@
+# Targeting.vue
 <script setup lang="ts">
 import { ArrowRight, InfoIcon, Monitor, Smartphone, Dice1 } from 'lucide-vue-next';
+import type { DeviceType, Targeting } from '~/types';
 
 interface Props {
     modelValue: {
-        devices: string[];
+        devices: DeviceType[];
         pageType: 'all' | 'specific';
         userType: 'all' | 'specific';
         trafficCoverage: number;
@@ -19,27 +21,60 @@ const props = withDefaults(defineProps<Props>(), {
     }),
 });
 
-const emit = defineEmits<{
-    (e: 'update:modelValue', value: Props['modelValue']): void;
-}>();
+const { updateSurveySettings, surveySettings } = useGlobal();
 
-const settings = ref(props.modelValue);
+// Create a fresh reactive copy to avoid circular references
+const settings = ref<Targeting>({
+    devices: surveySettings.value?.targeting?.devices
+        ? surveySettings.value?.targeting?.devices
+        : [...props.modelValue.devices],
+    pageType: surveySettings.value?.targeting?.pageType
+        ? surveySettings.value?.targeting?.pageType
+        : props.modelValue.pageType,
+    userType: surveySettings.value?.targeting?.userType
+        ? surveySettings.value?.targeting?.userType
+        : props.modelValue.userType,
+    trafficCoverage: surveySettings.value?.targeting?.trafficCoverage
+        ? surveySettings.value?.targeting?.trafficCoverage
+        : props.modelValue.trafficCoverage,
+});
 
 const deviceOptions = [
-    { id: 'desktop', label: 'Desktop', icon: Monitor },
-    { id: 'tablet', label: 'Tablet', icon: Dice1 },
-    { id: 'mobile', label: 'Mobile', icon: Smartphone },
+    { id: 'desktop', label: 'Desktop', icon: Monitor } as const,
+    { id: 'tablet', label: 'Tablet', icon: Dice1 } as const,
+    { id: 'mobile', label: 'Mobile', icon: Smartphone } as const,
 ];
 
-const handleDeviceChange = (device: string) => {
-    const index = settings.value.devices.indexOf(device);
+const handleDeviceChange = (device: DeviceType) => {
+    const devices = [...settings.value.devices];
+    const index = devices.indexOf(device);
     if (index === -1) {
-        settings.value.devices.push(device);
+        devices.push(device);
     } else {
-        settings.value.devices = settings.value.devices.filter((d) => d !== device);
+        devices.splice(index, 1);
     }
-    emit('update:modelValue', settings.value);
+    settings.value = {
+        ...settings.value,
+        devices,
+    };
 };
+
+// Watch for changes and update parent
+watch(
+    settings,
+    (newSettings) => {
+        // Create a plain object copy without reactive wrappers
+        const plainSettings: Targeting = {
+            devices: [...newSettings.devices],
+            pageType: newSettings.pageType,
+            userType: newSettings.userType,
+            trafficCoverage: newSettings.trafficCoverage,
+        };
+
+        updateSurveySettings('targeting', plainSettings);
+    },
+    { deep: true }
+);
 </script>
 
 <template>
@@ -136,7 +171,7 @@ const handleDeviceChange = (device: string) => {
                 </p>
 
                 <div class="flex items-center gap-2">
-                    <UiBaseInput v-model="settings.trafficCoverage" type="number" min="0" max="100" class="w-24" />
+                    <UiFormInput v-model="settings.trafficCoverage" type="number" :min="0" :max="100" class="w-24" />
                     <span class="text-sm text-gray-700 dark:text-gray-300">%</span>
                     <UiBaseBadge variant="primary" size="sm">PLUS</UiBaseBadge>
                 </div>
@@ -161,6 +196,5 @@ const handleDeviceChange = (device: string) => {
             </div>
         </div>
         <UiBaseButton size="md" class="w-max self-end mb-4"> Next <ArrowRight /> </UiBaseButton>
-        <!-- <Preview /> -->
     </div>
 </template>

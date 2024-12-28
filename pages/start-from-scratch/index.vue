@@ -9,10 +9,11 @@ import Summary from '~/components/createSurvey/Summary.vue';
 import Targeting from '~/components/createSurvey/Targeting.vue';
 import Preview from '~/components/shared/Preview.vue';
 import SurveyStepsSidebar from '~/components/shared/SurveyStepsSidebar.vue';
+import type { DeviceType } from '~/types';
 
 const { currentIndex } = useGlobal();
 
-const deviceType = ref<'mobile' | 'desktop' | 'tablet'>('desktop');
+const deviceType = ref<DeviceType>('desktop');
 const shouldRefresh = ref(false);
 
 const handleRefresh = () => {

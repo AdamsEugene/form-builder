@@ -1,19 +1,6 @@
 // types/survey.ts
 
-import {
-    ThumbsUp,
-    MessageSquare,
-    FileText,
-    Mail,
-    CheckSquare,
-    Circle,
-    CheckSquare2,
-    Star,
-    Stars,
-    PieChart,
-    TextQuote,
-    type LucideIcon,
-} from 'lucide-vue-next';
+import { type LucideIcon } from 'lucide-vue-next';
 
 // Question Types
 export enum QuestionType {
@@ -127,71 +114,13 @@ export interface DropdownOption {
     description?: string;
 }
 
-export const questionTypes = [
-    {
-        id: QuestionType.REACTION,
-        label: 'Reaction',
-        icon: ThumbsUp,
-        description: 'Simple reaction feedback',
-    },
-    {
-        id: QuestionType.SHORT_TEXT,
-        label: 'Short text answer',
-        icon: MessageSquare,
-        description: 'Brief text response',
-    },
-    {
-        id: QuestionType.LONG_TEXT,
-        label: 'Long text answer',
-        icon: FileText,
-        description: 'Detailed text response',
-    },
-    {
-        id: QuestionType.EMAIL,
-        label: 'Email',
-        icon: Mail,
-        description: 'Collect email addresses',
-    },
-    {
-        id: QuestionType.YES_NO,
-        label: 'Yes / No',
-        icon: CheckSquare,
-        description: 'Binary choice question',
-    },
-    {
-        id: QuestionType.RADIO,
-        label: 'Radio options',
-        icon: Circle,
-        description: 'Single choice from multiple options',
-    },
-    {
-        id: QuestionType.CHECKBOX,
-        label: 'Checkbox options',
-        icon: CheckSquare2,
-        description: 'Multiple choice selection',
-    },
-    {
-        id: QuestionType.RATING_5,
-        label: '1 - 5 Rating scale',
-        icon: Star,
-        description: 'Five-point rating scale',
-    },
-    {
-        id: QuestionType.RATING_7,
-        label: '1 - 7 Rating scale',
-        icon: Stars,
-        description: 'Seven-point rating scale',
-    },
-    {
-        id: QuestionType.NPS,
-        label: 'Net Promoter Score',
-        icon: PieChart,
-        description: 'Measure customer loyalty (0-10)',
-    },
-    {
-        id: QuestionType.STATEMENT,
-        label: 'Statement',
-        icon: TextQuote,
-        description: 'Display text without requiring response',
-    },
-];
+export interface Integration {
+    id: string;
+    name: string;
+    icon: LucideIcon;
+    badge?: 'BUSINESS' | 'SCALE';
+    enabled: boolean;
+    external?: boolean;
+    isNested?: boolean;
+    iconColor: string;
+}

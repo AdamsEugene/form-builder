@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Device type enum
-type DeviceType = 'desktop' | 'mobile' | 'tablet';
 import { Monitor, Smartphone, RefreshCcwDot, Dice1 } from 'lucide-vue-next';
+import type { DeviceType } from '~/types';
 
 const deviceType = ref<DeviceType>('desktop');
 

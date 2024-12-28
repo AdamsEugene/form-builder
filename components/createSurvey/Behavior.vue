@@ -1,32 +1,35 @@
+# Behavior.vue
 <script setup lang="ts">
 import { ArrowRight } from 'lucide-vue-next';
+import type { Behavior } from '~/types';
 
-interface Settings {
-    reuseBehavior: boolean;
-    timing: 'immediate' | 'delay' | 'abandon' | 'scroll';
-    frequency: 'untilSubmit' | 'once' | 'always';
-    includeScreenshot: boolean;
+interface Props {
+    modelValue: Behavior;
 }
 
-const props = withDefaults(
-    defineProps<{
-        modelValue: Settings;
-    }>(),
-    {
-        modelValue: () => ({
-            reuseBehavior: false,
-            timing: 'immediate',
-            frequency: 'untilSubmit',
-            includeScreenshot: false,
-        }),
-    }
-);
+const props = withDefaults(defineProps<Props>(), {
+    modelValue: () => ({
+        reuseBehavior: false,
+        timing: 'immediate',
+        frequency: 'untilSubmit',
+        includeScreenshot: false,
+    }),
+});
 
-const emit = defineEmits<{
-    (e: 'update:modelValue', value: Settings): void;
-}>();
+const {
+    updateSurveySettings,
+    surveySettings: { value },
+} = useGlobal();
 
-const settings = ref(props.modelValue);
+// Create a fresh reactive copy to avoid circular refs
+const settings = ref<Behavior>({
+    reuseBehavior: value?.behavior?.reuseBehavior ? value?.behavior?.reuseBehavior : props.modelValue.reuseBehavior,
+    timing: value?.behavior?.timing ? value?.behavior?.timing : props.modelValue.timing,
+    frequency: value?.behavior?.frequency ? value?.behavior?.frequency : props.modelValue.frequency,
+    includeScreenshot: value?.behavior?.includeScreenshot
+        ? value?.behavior?.includeScreenshot
+        : props.modelValue.includeScreenshot,
+});
 
 const timingOptions = [
     {
@@ -68,6 +71,22 @@ const frequencyOptions = [
         description: 'If users minimize the survey or respond to it, it will still show again the next session',
     },
 ] as const;
+
+// Watch for changes and update parent using non-reactive copy
+watch(
+    settings,
+    (newSettings) => {
+        const plainSettings: Behavior = {
+            reuseBehavior: newSettings.reuseBehavior,
+            timing: newSettings.timing,
+            frequency: newSettings.frequency,
+            includeScreenshot: newSettings.includeScreenshot,
+        };
+
+        updateSurveySettings('behavior', plainSettings);
+    },
+    { deep: true }
+);
 </script>
 
 <template>
@@ -147,6 +166,5 @@ const frequencyOptions = [
             </section>
         </div>
         <UiBaseButton size="md" class="w-max self-end mb-4"> Next <ArrowRight /> </UiBaseButton>
-        <!-- <Preview /> -->
     </div>
 </template>

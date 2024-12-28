@@ -2,6 +2,7 @@
 import BaseButton from '../ui/BaseButton.vue';
 import type { FeedbackTab } from '~/types';
 import { ArrowRight } from 'lucide-vue-next';
+import { placementConfigs } from '~/constants/placement';
 
 interface SurveyType {
     id: FeedbackTab;
@@ -11,7 +12,7 @@ interface SurveyType {
     badge?: string;
 }
 
-const { survey, setSurvey } = useGlobal();
+const { survey, setSurvey, setPosition } = useGlobal();
 
 const selectedType = ref(survey.value?.type);
 
@@ -56,6 +57,8 @@ const surveyTypes: SurveyType[] = [
 ];
 
 const handleTypeSelect = (typeId: FeedbackTab) => {
+    const { placement } = placementConfigs(typeId);
+    setPosition({ placement });
     setSurvey({ type: typeId });
     selectedType.value = typeId; // Update the local ref
 };

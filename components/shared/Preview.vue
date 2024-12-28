@@ -2,7 +2,7 @@
 import { ref, watch, computed } from 'vue';
 import SurveyRating from '@/components/shared/SurveyRating.vue';
 import FeedbackTab from '@/components/shared/FeedbackTab.vue';
-import type { FeedbackTab as FBT } from '~/types';
+import type { DeviceType, FeedbackTab as FBT } from '~/types';
 import { useGlobal } from '@/composables/useGlobal';
 import type { ReactionQuestion } from '~/types/survey';
 import { getReactionSet } from '@/utils/reactionType';
@@ -11,7 +11,7 @@ import { ReactionType } from '~/types/survey';
 const { survey, activeQuestion, colors, position } = useGlobal();
 
 const rating = ref<number>(0);
-const deviceType = ref<'mobile' | 'desktop' | 'tablet'>('desktop');
+const deviceType = ref<DeviceType>('desktop');
 const feedbackType = ref<FBT>(survey.value?.type || 'popover');
 const isOpen = ref(true);
 
