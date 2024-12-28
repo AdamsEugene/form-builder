@@ -38,10 +38,14 @@ export const useGlobal = () => {
 
                 if (savedState.surveyData) {
                     survey.value = safeClone(savedState.surveyData);
-                    activeQuestion.value = savedState.surveyData.questions[0]
+                    activeQuestion.value = savedState.surveyData.questions?.[0]
                         ? safeClone(savedState.surveyData.questions[0])
-                        : null;
+                        : INITIAL_QUESTIONS.reaction;
+                } else {
+                    activeQuestion.value = INITIAL_QUESTIONS.reaction;
                 }
+            } else {
+                activeQuestion.value = INITIAL_QUESTIONS.reaction;
             }
         } catch (err) {
             console.error('Error loading state from IndexedDB:', err);
@@ -102,7 +106,7 @@ export const useGlobal = () => {
         isCollapsed.value = !isCollapsed.value;
     };
 
-    const toggleMiniSidebar = () => {
+    const toggleMiniSidebar = async () => {
         isMiniCollapsed.value = !isMiniCollapsed.value;
     };
 

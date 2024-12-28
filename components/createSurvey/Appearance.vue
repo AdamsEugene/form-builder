@@ -5,8 +5,9 @@ import { ArrowRight } from 'lucide-vue-next';
 import { surveyColors } from '~/constants/colors';
 import type { BorderRadius, Padding, Placement } from '~/types';
 import { placementConfigs } from '~/constants/placement';
+import { QuestionType } from '~/types/survey';
 
-const { colors, setColors, survey, position, setPosition } = useGlobal();
+const { colors, setColors, survey, position, setPosition, activeQuestion } = useGlobal();
 
 // Initialize with refs
 const backgroundColor = ref('');
@@ -227,28 +228,40 @@ const handleNext = () => {
                             label="Question color"
                         />
                     </div>
-                    <div class="bg-white shadow-sm p-1 rounded-2xl">
+                    <div
+                        v-if="activeQuestion?.type !== QuestionType.THANK_YOU"
+                        class="bg-white shadow-sm p-1 rounded-2xl"
+                    >
                         <UiColorPicker
                             v-model="labelColor"
                             :predefinedColors="surveyColors.labelColor"
                             label="Label color"
                         />
                     </div>
-                    <div class="bg-white shadow-sm p-1 rounded-2xl">
+                    <div
+                        v-if="activeQuestion?.type === QuestionType.REACTION"
+                        class="bg-white shadow-sm p-1 rounded-2xl"
+                    >
                         <UiColorPicker
                             v-model="emojiBackgroundColor"
                             :predefinedColors="surveyColors.emojiBackgroundColor"
                             label="Emoji background color"
                         />
                     </div>
-                    <div class="bg-white shadow-sm p-1 rounded-2xl">
+                    <div
+                        v-if="activeQuestion?.type === QuestionType.REACTION"
+                        class="bg-white shadow-sm p-1 rounded-2xl"
+                    >
                         <UiColorPicker
                             v-model="emojiHoverColor"
                             :predefinedColors="surveyColors.emojiHoverColor"
                             label="Emoji hover color"
                         />
                     </div>
-                    <div class="bg-white shadow-sm p-1 rounded-2xl">
+                    <div
+                        v-if="activeQuestion?.type === QuestionType.REACTION"
+                        class="bg-white shadow-sm p-1 rounded-2xl"
+                    >
                         <UiColorPicker
                             v-model="emojiActiveColor"
                             :predefinedColors="surveyColors.emojiActiveColor"

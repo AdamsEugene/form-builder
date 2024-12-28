@@ -168,7 +168,12 @@ watch(
                             label-placement="right"
                             class="w-full"
                         />
-                        <UiBaseButton variant="ghost" size="sm" class="" @click="$emit('delete')">
+                        <UiBaseButton
+                            variant="ghost"
+                            size="sm"
+                            :class="{ 'bg-primary-400': answer.withStatement }"
+                            @click="answer.withStatement = !answer.withStatement"
+                        >
                             <MessageCircle class="w-4 h-4" />
                         </UiBaseButton>
                         <UiBaseButton

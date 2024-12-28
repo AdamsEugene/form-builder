@@ -5,7 +5,6 @@ import type { DeviceType, FeedbackTab, PopoverPlacement, SidePlacement } from '~
 import { QuestionType, type Question } from '~/types/survey';
 import { type Reaction, isEmojiReaction, isIconReaction } from '@/utils/reactionType';
 
-
 interface Props {
     // Content
     question: Question | null;
@@ -210,13 +209,22 @@ const handleClick = () => {
                 class="flex flex-col justify-between items-center"
                 :style="{ gap }"
             >
-                <div v-for="answer in question.options" class="flex items-center gap-2 w-full">
+                <div v-for="answer in question.options" class="flex flex-col items-center gap-2 w-full">
                     <UiBasePillRadio
                         v-model="answer.id"
                         name="options"
                         :value="answer.id"
                         :label="answer.text"
                         class="w-full"
+                    />
+                    <UiFormTextarea
+                        v-if="answer.withStatement && answer.id"
+                        v-model="textAnswer"
+                        placeholder="Enter your description"
+                        label="Leave a comment"
+                        class="w-full"
+                        autogrow
+                        required
                     />
                 </div>
             </div>
@@ -227,8 +235,17 @@ const handleClick = () => {
                 class="flex flex-col justify-between items-center"
                 :style="{ gap }"
             >
-                <div v-for="answer in question.options" class="flex items-center gap-2 w-full">
+                <div v-for="answer in question.options" class="flex flex-col items-center gap-2 w-full">
                     <UiBasePillCheckbox v-model="answer.isSelected" :label="answer.text" class="w-full" />
+                    <UiFormTextarea
+                        v-if="answer.withStatement && answer.id"
+                        v-model="textAnswer"
+                        placeholder="Enter your description"
+                        label="Leave a comment"
+                        class="w-full"
+                        autogrow
+                        required
+                    />
                 </div>
             </div>
 
@@ -243,6 +260,7 @@ const handleClick = () => {
                         v-for="i in question?.type === QuestionType.RATING_5 ? 5 : 7"
                         :key="i"
                         variant="secondary"
+                        :size="question?.type === QuestionType.RATING_5 ? 'xl' : 'md'"
                         >{{ i }}</UiBaseButton
                     >
                 </div>
@@ -292,7 +310,7 @@ const handleClick = () => {
                     }"
                     @click="handleNext"
                 >
-                    {{ nextButtonText }}</UiBaseButton
+                    {{ question?.type !== QuestionType.THANK_YOU ? 'Done' : nextButtonText }}</UiBaseButton
                 >
                 <!-- IS REQUIRED -->
             </div>

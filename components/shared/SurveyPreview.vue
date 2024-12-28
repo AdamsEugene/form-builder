@@ -11,6 +11,8 @@ const emit = defineEmits<{
     refresh: [];
 }>();
 
+const { survey, setActiveQuestion, activeQuestion } = useGlobal();
+
 // Toggle device type
 const toggleDevice = (type: DeviceType) => {
     deviceType.value = type;
@@ -31,6 +33,22 @@ const isActiveDevice = (type: DeviceType) => deviceType.value === type;
         <!-- Preview Controls -->
         <div class="flex items-center gap-2 justify-between">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Preview</h2>
+
+            <div class="flex items-center gap-2">
+                <h2 class="text-sm text-gray-900 dark:text-white">questions</h2>
+                <div
+                    v-for="(question, index) in survey?.questions"
+                    class="flex items-center gap-2 bg-sidebar-gradient p-1 h-8 w-8 justify-center rounded-full shadow-md hover:shadow-lg cursor-pointer"
+                    @mouseenter="setActiveQuestion(question)"
+                    @click="setActiveQuestion(question)"
+                >
+                    <span
+                        class="text-lg font-medium text-gray-700 dark:text-gray-200"
+                        :class="{ ' font-bold text-primary-700': activeQuestion?.id === question.id }"
+                        >{{ question.questionNo || index + 1 }}</span
+                    >
+                </div>
+            </div>
 
             <!-- Device Toggle -->
             <div class="bg-gray-100 rounded-2xl p-1 flex gap-1 dark:bg-gray-800 overflow-hidden">

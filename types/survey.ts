@@ -32,6 +32,7 @@ interface BaseQuestion {
     type: QuestionType;
     title: string;
     required: boolean;
+    questionNo: number;
     logic?: {
         nextQuestion: string | null; // id of next question or null for default flow
         options?: DropdownOption[];
@@ -61,6 +62,8 @@ interface TextQuestion extends BaseQuestion {
 interface BaseChoiceOption {
     id: string;
     text: string;
+    withStatement: boolean;
+    statement: string;
 }
 
 interface CheckboxOption extends BaseChoiceOption {

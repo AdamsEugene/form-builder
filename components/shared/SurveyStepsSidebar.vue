@@ -2,8 +2,15 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 
-const { survey, isMiniCollapsed, toggleMiniSidebar, updateSidebarState, currentIndex, updateCurrentIndex } =
-    useGlobal();
+const {
+    survey,
+    isMiniCollapsed,
+    toggleMiniSidebar,
+    updateSidebarState,
+    currentIndex,
+    updateCurrentIndex,
+    activeQuestion,
+} = useGlobal();
 
 const selectedType = ref(survey.value?.type);
 
@@ -14,7 +21,7 @@ const activeStepIndex = ref(currentIndex.value);
 const completedSteps = computed(() => [
     { name: 'Details: New survey' },
     { name: `Type: ${selectedType.value}` },
-    { name: 'Questions: 2 questions' },
+    { name: `Questions: ${activeQuestion.value?.questionNo || 1}` },
 ]);
 
 const upcomingSteps = [

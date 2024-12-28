@@ -1,6 +1,7 @@
 import { QuestionType, ReactionType, type Question } from '~/types/survey';
 
 const INITIAL_REACTION_QUESTION: Question = {
+    questionNo: 1,
     id: crypto.randomUUID(),
     type: QuestionType.REACTION,
     title: 'How would you rate your experience?',
@@ -16,6 +17,7 @@ const INITIAL_REACTION_QUESTION: Question = {
 };
 
 const THANK_YOU_QUESTION: Question = {
+    questionNo: 1,
     id: crypto.randomUUID(),
     type: QuestionType.THANK_YOU,
     title: 'How would you rate your experience?',
@@ -27,6 +29,7 @@ const THANK_YOU_QUESTION: Question = {
 };
 
 const INITIAL_SHORT_TEXT_QUESTION: Question = {
+    questionNo: 1,
     id: crypto.randomUUID(),
     type: QuestionType.SHORT_TEXT,
     title: 'Please provide a brief response',
@@ -39,6 +42,7 @@ const INITIAL_SHORT_TEXT_QUESTION: Question = {
 };
 
 const INITIAL_LONG_TEXT_QUESTION: Question = {
+    questionNo: 1,
     id: crypto.randomUUID(),
     type: QuestionType.LONG_TEXT,
     title: 'Please provide your detailed feedback',
@@ -51,6 +55,7 @@ const INITIAL_LONG_TEXT_QUESTION: Question = {
 };
 
 const INITIAL_EMAIL_QUESTION: Question = {
+    questionNo: 1,
     id: crypto.randomUUID(),
     type: QuestionType.EMAIL,
     title: 'What is your email address?',
@@ -63,14 +68,23 @@ const INITIAL_EMAIL_QUESTION: Question = {
 };
 
 const INITIAL_YES_NO_QUESTION: Question = {
+    questionNo: 1,
     id: crypto.randomUUID(),
     type: QuestionType.YES_NO,
     title: 'Would you recommend our service?',
     required: false,
     randomized: false,
     options: [
-        { id: 'yes', text: 'Yes' },
-        { id: 'no', text: 'No' },
+        {
+            id: 'yes', text: 'Yes',
+            withStatement: false,
+            statement: ''
+        },
+        {
+            id: 'no', text: 'No',
+            withStatement: false,
+            statement: ''
+        },
     ],
     logic: {
         nextQuestion: null,
@@ -79,14 +93,23 @@ const INITIAL_YES_NO_QUESTION: Question = {
 };
 
 const INITIAL_RADIO_QUESTION: Question = {
+    questionNo: 1,
     id: crypto.randomUUID(),
     type: QuestionType.RADIO,
     title: 'Which option best describes your experience?',
     required: false,
     randomized: false,
     options: [
-        { id: 'option1', text: 'Option 1' },
-        { id: 'option2', text: 'Option 2' },
+        {
+            id: 'option1', text: 'Option 1',
+            withStatement: false,
+            statement: ''
+        },
+        {
+            id: 'option2', text: 'Option 2',
+            withStatement: false,
+            statement: ''
+        },
     ],
     logic: {
         nextQuestion: null,
@@ -95,14 +118,23 @@ const INITIAL_RADIO_QUESTION: Question = {
 };
 
 const INITIAL_CHECKBOX_QUESTION: Question = {
+    questionNo: 1,
     id: crypto.randomUUID(),
     type: QuestionType.CHECKBOX,
     title: 'Select all that apply',
     required: false,
     randomized: false,
     options: [
-        { id: 'option1', text: 'Option 1', isSelected: false },
-        { id: 'option2', text: 'Option 2', isSelected: false },
+        {
+            id: 'option1', text: 'Option 1', isSelected: false,
+            withStatement: false,
+            statement: ''
+        },
+        {
+            id: 'option2', text: 'Option 2', isSelected: false,
+            withStatement: false,
+            statement: ''
+        },
     ],
     logic: {
         nextQuestion: null,
@@ -111,6 +143,7 @@ const INITIAL_CHECKBOX_QUESTION: Question = {
 };
 
 const INITIAL_RATING_5_QUESTION: Question = {
+    questionNo: 1,
     id: crypto.randomUUID(),
     type: QuestionType.RATING_5,
     title: 'How would you rate our service?',
@@ -124,6 +157,7 @@ const INITIAL_RATING_5_QUESTION: Question = {
 };
 
 const INITIAL_RATING_7_QUESTION: Question = {
+    questionNo: 1,
     id: crypto.randomUUID(),
     type: QuestionType.RATING_7,
     title: 'How would you rate our service?',
@@ -137,6 +171,7 @@ const INITIAL_RATING_7_QUESTION: Question = {
 };
 
 const INITIAL_NPS_QUESTION: Question = {
+    questionNo: 1,
     id: crypto.randomUUID(),
     type: QuestionType.NPS,
     title: 'How likely are you to recommend us to others?',
@@ -150,6 +185,7 @@ const INITIAL_NPS_QUESTION: Question = {
 };
 
 const INITIAL_STATEMENT_QUESTION: Question = {
+    questionNo: 1,
     id: crypto.randomUUID(),
     type: QuestionType.STATEMENT,
     title: 'Important Information',

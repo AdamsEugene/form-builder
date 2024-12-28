@@ -78,7 +78,7 @@ const addAnswer = (questionId: string) => {
     const question = questions.value.find((q) => q.id === questionId) as ChoiceQuestion | null;
     if (!question) return;
 
-    const newOption = { id: crypto.randomUUID(), text: '' };
+    const newOption = { id: crypto.randomUUID(), text: '', withStatement: false, statement: '' };
     question.options = [...(question.options || []), newOption];
 };
 
@@ -182,6 +182,7 @@ watch(
                 :ref="index === questions.length - 1 ? (el) => (lastAddedQuestion = el) : undefined"
             >
                 <SharedSurveyQuestion
+                    data-question
                     v-model="questions[index]"
                     :index="index"
                     :no-delete="questions.length === 2"
@@ -191,7 +192,6 @@ watch(
                     @replace="(type) => handleReplace(type, index)"
                     @add-answer="addAnswer"
                     @delete-answer="deleteAnswer"
-                    data-question
                 />
             </div>
         </TransitionGroup>
