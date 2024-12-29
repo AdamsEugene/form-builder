@@ -162,6 +162,7 @@ export interface GlobalState {
     colors: ColorSettings;
     position: AlignmentSetting;
     surveySettings: Partial<SurveySettings> | null;
+    deviceType: DeviceType;
 }
 
 export interface Color {

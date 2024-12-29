@@ -12,7 +12,7 @@
     <iframe
         ref="frameRef"
         class="w-full border border-gray-200 rounded-2xl"
-        :style="{ height: `${560}px` }"
+        :style="{ height: `${deviceType === 'desktop' ? 560 : deviceType === 'mobile' ? 620 : 600}px` }"
         @load="handleIframeLoad"
     />
 </template>
@@ -20,9 +20,11 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, type Component } from 'vue';
 import { createApp, h } from 'vue';
+import type { DeviceType } from '~/types';
 
 const props = defineProps<{
     component: Component;
+    deviceType: DeviceType;
     refresh?: boolean;
 }>();
 

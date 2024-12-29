@@ -1,7 +1,7 @@
 // FeedbackTab.vue
 <script setup lang="ts">
 import type { CSSProperties } from 'vue';
-import type { PopoverPlacement, SidePlacement } from '~/types';
+import type { DeviceType, PopoverPlacement, SidePlacement } from '~/types';
 import ToggleButton from './ToggleButton.vue';
 
 type FeedBackTab = 'popover' | 'button' | 'bubble' | 'embedded' | 'fullScreen' | 'link';
@@ -18,6 +18,7 @@ interface Props {
     showIcon?: boolean;
     contentWidth?: string;
     feedbackType?: FeedBackTab;
+    deviceType?: DeviceType;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -32,6 +33,7 @@ const props = withDefaults(defineProps<Props>(), {
     showIcon: true,
     contentWidth: '400px',
     feedbackType: 'popover',
+    deviceType: 'desktop',
 });
 
 const emit = defineEmits<{
@@ -100,6 +102,9 @@ const containerStyles = computed<CSSProperties>(() => {
         ...centerItem,
         display: 'flex',
         zIndex: 99,
+        width: `${
+            props.deviceType === 'desktop' ? props.contentWidth : props.deviceType === 'mobile' ? '100%' : '600px'
+        }`,
     };
 });
 
@@ -155,7 +160,10 @@ const contentStyles = computed<CSSProperties>(() => {
     // Base styles that apply to both types
     const baseStyles: CSSProperties = {
         position: 'relative',
-        width: props.contentWidth,
+        // width: props.contentWidth,
+        width: `${
+            props.deviceType === 'desktop' ? props.contentWidth : props.deviceType === 'mobile' ? '100%' : '600px'
+        }`,
         flexDirection: isRight || isBottomRight || isBottomLeft ? 'row' : 'row-reverse',
     };
 

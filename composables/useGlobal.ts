@@ -1,6 +1,6 @@
 import globalStore from '@/utils/indexedDB';
 import { DEFAULT_COLORS, DEFAULT_POSITION } from '~/constants/colors';
-import type { AlignmentSetting, ColorSettings, GlobalState, Survey, SurveySettings } from '~/types';
+import type { AlignmentSetting, ColorSettings, DeviceType, GlobalState, Survey, SurveySettings } from '~/types';
 import type { Question } from '~/types/survey';
 
 // Simple JSON-based clone function
@@ -18,6 +18,7 @@ export const useGlobal = () => {
     const colors = useState<ColorSettings>('color-settings', () => ({ ...DEFAULT_COLORS }));
     const position = useState<AlignmentSetting>('position-settings', () => ({ ...DEFAULT_POSITION }));
     const surveySettings = useState<Partial<SurveySettings> | null>('survey-settings', () => null);
+    const deviceType = useState<DeviceType>('device-type', () => 'desktop');
 
     // Initialize state from IndexedDB
     const initializeState = async () => {
@@ -35,6 +36,7 @@ export const useGlobal = () => {
                     ? { ...DEFAULT_POSITION, ...safeClone(savedState.position) }
                     : { ...DEFAULT_POSITION };
                 surveySettings.value = savedState.surveySettings ? safeClone(savedState.surveySettings) : null;
+                deviceType.value = savedState.deviceType ?? 'desktop';
 
                 if (savedState.surveyData) {
                     survey.value = safeClone(savedState.surveyData);
@@ -66,6 +68,7 @@ export const useGlobal = () => {
                 colors: safeClone(toRaw(colors.value)),
                 position: safeClone(toRaw(position.value)),
                 surveySettings: surveySettings.value ? safeClone(toRaw(surveySettings.value)) : null,
+                deviceType: deviceType.value ?? 'desktop',
             };
             await globalStore.setValue('general', currentState);
         } catch (err) {
@@ -171,6 +174,10 @@ export const useGlobal = () => {
         surveySettings.value = null;
     };
 
+    const setDeviceType = (type: DeviceType) => {
+        deviceType.value = type;
+    };
+
     const clearStorage = () => {
         survey.value = null;
         activeQuestion.value = null;
@@ -181,7 +188,17 @@ export const useGlobal = () => {
 
     // Watch for state changes and save to IndexedDB
     watch(
-        [isCollapsed, isMiniCollapsed, survey, currentIndex, activeQuestion, colors, position, surveySettings],
+        [
+            isCollapsed,
+            isMiniCollapsed,
+            survey,
+            currentIndex,
+            activeQuestion,
+            colors,
+            position,
+            surveySettings,
+            deviceType,
+        ],
         async () => {
             await saveState();
         },
@@ -195,6 +212,7 @@ export const useGlobal = () => {
         colors: readonly(colors),
         position: readonly(position),
         surveySettings: surveySettings,
+        deviceType: readonly(deviceType),
         setPosition,
         resetPosition,
         setColors,
@@ -211,6 +229,7 @@ export const useGlobal = () => {
         setSurveySettings,
         updateSurveySettings,
         resetSurveySettings,
+        setDeviceType,
         clearStorage,
     };
 };

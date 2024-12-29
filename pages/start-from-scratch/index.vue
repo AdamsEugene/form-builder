@@ -9,11 +9,9 @@ import Summary from '~/components/createSurvey/Summary.vue';
 import Targeting from '~/components/createSurvey/Targeting.vue';
 import Preview from '~/components/shared/Preview.vue';
 import SurveyStepsSidebar from '~/components/shared/SurveyStepsSidebar.vue';
-import type { DeviceType } from '~/types';
 
-const { currentIndex } = useGlobal();
+const { currentIndex, deviceType } = useGlobal();
 
-const deviceType = ref<DeviceType>('desktop');
 const shouldRefresh = ref(false);
 
 const handleRefresh = () => {
@@ -76,7 +74,7 @@ const getStepComponent = computed(() => {
             <div class="flex flex-col gap-8">
                 <div class="sticky top-6">
                     <SharedSurveyPreview v-model:deviceType="deviceType" @refresh="handleRefresh">
-                        <SharedIframePreview :component="Preview" :refresh="shouldRefresh" />
+                        <SharedIframePreview :component="Preview" :refresh="shouldRefresh" :device-type="deviceType" />
                     </SharedSurveyPreview>
                 </div>
             </div>

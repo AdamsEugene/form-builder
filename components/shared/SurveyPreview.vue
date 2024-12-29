@@ -3,19 +3,17 @@
 import { Monitor, Smartphone, RefreshCcwDot, Dice1 } from 'lucide-vue-next';
 import type { DeviceType } from '~/types';
 
-const deviceType = ref<DeviceType>('desktop');
-
 // Define emits
 const emit = defineEmits<{
     'update:deviceType': [type: DeviceType];
     refresh: [];
 }>();
 
-const { survey, setActiveQuestion, activeQuestion } = useGlobal();
+const { survey, setActiveQuestion, activeQuestion, setDeviceType, deviceType } = useGlobal();
 
 // Toggle device type
 const toggleDevice = (type: DeviceType) => {
-    deviceType.value = type;
+    setDeviceType(type);
     emit('update:deviceType', type);
 };
 

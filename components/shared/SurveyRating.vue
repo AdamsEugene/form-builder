@@ -86,11 +86,13 @@ const containerStyles = computed<CSSProperties>(() => {
         maxWidth: props.deviceType === 'mobile' ? '100%' : props.maxWidth,
         backgroundColor: props.backgroundColor,
         borderRadius: props.borderRadius,
-        padding: !props.isOpen ? '8px 24px' : props.padding,
+        padding: props.deviceType === 'mobile' ? '8px 4px' : !props.isOpen ? '8px 24px' : props.padding,
         boxShadow: '0px 0px 12px 1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
         // transformOrigin,
     };
 });
+
+const calGap = computed(() => (props.deviceType === 'mobile' ? '8px' : props.gap));
 
 // Compute emoji container styles
 const getEmojiContainerStyle = (value: number): CSSProperties => ({
@@ -120,7 +122,11 @@ const handleClick = () => {
             // { maxWidth: !isOpen ? '300px' : '100%' }
         ]"
     >
-        <div class="w-[320px] flex gap-2 items-center mb-4 cursor-pointer" @click="handleClick">
+        <div
+            class="w-[320px] flex gap-2 items-center mb-4 cursor-pointer"
+            @click="handleClick"
+            :class="{ 'w-full': deviceType === 'mobile' }"
+        >
             <h3 class="text-lg font-medium flex-1" :style="{ color: questionColor }">
                 {{ question?.title }}
             </h3>
@@ -142,7 +148,7 @@ const handleClick = () => {
             <div
                 v-if="question?.type === QuestionType.REACTION"
                 class="flex justify-between items-center"
-                :style="{ gap }"
+                :style="{ gap: calGap }"
             >
                 <div
                     v-for="rating in ratings"
@@ -169,7 +175,7 @@ const handleClick = () => {
             <div
                 v-if="question?.type === QuestionType.LONG_TEXT"
                 class="flex justify-between items-center"
-                :style="{ gap }"
+                :style="{ gap: calGap }"
             >
                 <UiFormTextarea
                     v-model="textAnswer"
@@ -184,7 +190,7 @@ const handleClick = () => {
             <div
                 v-if="question?.type === QuestionType.SHORT_TEXT || question?.type === QuestionType.EMAIL"
                 class="flex justify-between items-center"
-                :style="{ gap }"
+                :style="{ gap: calGap }"
             >
                 <div class="w-full">
                     <UiFormInput v-model="textAnswer" placeholder="Enter your description" class="w-full" required />
@@ -195,7 +201,7 @@ const handleClick = () => {
             <div
                 v-if="question?.type === QuestionType.YES_NO"
                 class="flex justify-between items-center"
-                :style="{ gap }"
+                :style="{ gap: calGap }"
             >
                 <div class="w-full flex items-center justify-around">
                     <UiBaseButton variant="secondary">YES</UiBaseButton>
@@ -207,7 +213,7 @@ const handleClick = () => {
             <div
                 v-if="question?.type === QuestionType.RADIO"
                 class="flex flex-col justify-between items-center"
-                :style="{ gap }"
+                :style="{ gap: calGap }"
             >
                 <div v-for="answer in question.options" class="flex flex-col items-center gap-2 w-full">
                     <UiBasePillRadio
@@ -233,7 +239,7 @@ const handleClick = () => {
             <div
                 v-if="question?.type === QuestionType.CHECKBOX"
                 class="flex flex-col justify-between items-center"
-                :style="{ gap }"
+                :style="{ gap: calGap }"
             >
                 <div v-for="answer in question.options" class="flex flex-col items-center gap-2 w-full">
                     <UiBasePillCheckbox v-model="answer.isSelected" :label="answer.text" class="w-full" />
@@ -253,7 +259,7 @@ const handleClick = () => {
             <div
                 v-if="question?.type === QuestionType.RATING_5 || question?.type === QuestionType.RATING_7"
                 class="flex justify-between items-center"
-                :style="{ gap }"
+                :style="{ gap: calGap }"
             >
                 <div class="w-full flex items-center justify-around">
                     <UiBaseButton
@@ -267,7 +273,7 @@ const handleClick = () => {
             </div>
 
             <!-- RATING 1-5 -->
-            <div v-if="question?.type === QuestionType.NPS" class="flex justify-between items-center" :style="{ gap }">
+            <div v-if="question?.type === QuestionType.NPS" class="flex justify-between items-center" :style="{ gap: calGap }">
                 <div class="w-full flex items-center justify-around">
                     <UiRangeSlider
                         v-model="value"
