@@ -34,7 +34,7 @@ const isActiveDevice = (type: DeviceType) => deviceType.value === type;
         <div class="flex items-center gap-2 justify-between">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Preview</h2>
 
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 truncate">
                 <h2 class="text-sm text-gray-900 dark:text-white">questions</h2>
                 <div
                     v-for="(question, index) in survey?.questions"

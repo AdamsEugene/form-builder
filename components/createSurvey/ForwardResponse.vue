@@ -4,7 +4,7 @@ import { ArrowRight, ExternalLink, Info, Settings2 } from 'lucide-vue-next';
 import { integrations } from '~/constants/question';
 import type { ForwardResponse } from '~/types';
 
-const { surveySettings, updateSurveySettings } = useGlobal();
+const { surveySettings, updateSurveySettings, updateCurrentIndex } = useGlobal();
 
 const settings = ref<ForwardResponse>({
     enabled: true,
@@ -262,6 +262,8 @@ watch(
                 </div>
             </div>
         </div>
-        <UiBaseButton size="md" class="w-max self-end mb-4"> Next <ArrowRight :size="16" /> </UiBaseButton>
+        <UiBaseButton size="md" class="w-max self-end mb-4" @click="updateCurrentIndex(7)">
+            Next <ArrowRight :size="16" />
+        </UiBaseButton>
     </div>
 </template>

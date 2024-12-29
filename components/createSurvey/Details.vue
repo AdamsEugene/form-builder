@@ -3,8 +3,9 @@ import type { Color } from '~/types';
 import FormInput from '../ui/FormInput.vue';
 import FormTextarea from '../ui/FormTextarea.vue';
 import { useGlobal } from '@/composables/useGlobal';
+import { ArrowRight } from 'lucide-vue-next';
 
-const { survey, setSurvey } = useGlobal();
+const { survey, setSurvey, updateCurrentIndex } = useGlobal();
 
 const email = ref(survey.value?.email || '');
 const emailError = ref('');
@@ -42,24 +43,7 @@ const isDisabled = ref(false);
 
 const selectedOption = ref('option1');
 
-const defaultColors: Color[] = [
-    { id: '1', name: 'Ruby Red', value: '#E0115F' },
-    { id: '2', name: 'Sapphire Blue', value: '#0F52BA' },
-    { id: '3', name: 'Emerald Green', value: '#50C878' },
-    { id: '4', name: 'Royal Purple', value: '#7851A9' },
-    { id: '5', name: 'Sunset Orange', value: '#FD5E53' },
-    { id: '6', name: 'Ocean Blue', value: '#2E8BC0' },
-];
-
 const selectedColor = ref('');
-
-const handleColorAdded = (color: Color) => {
-    console.log('New color added:', color);
-};
-
-const handleColorRemoved = (colorId: string) => {
-    console.log('Color removed:', colorId);
-};
 </script>
 
 <template>
@@ -82,8 +66,12 @@ const handleColorRemoved = (colorId: string) => {
             autogrow
             required
         />
+        <UiBaseButton size="md" class="w-max self-end mb-4" @click="updateCurrentIndex(1)">
+            Next <ArrowRight />
+        </UiBaseButton>
 
         <UiBaseCheckbox
+            v-if="false"
             v-model="isAccepted"
             label="Accept terms and conditions"
             description="By accepting, you agree to our terms of service and privacy policy"
@@ -92,22 +80,22 @@ const handleColorRemoved = (colorId: string) => {
         />
 
         <!-- Different sizes -->
-        <UiBaseCheckbox v-model="isChecked1" label="Small checkbox" size="sm" />
+        <UiBaseCheckbox v-if="false" v-model="isChecked1" label="Small checkbox" size="sm" />
 
-        <UiBaseCheckbox v-model="isChecked2" label="Medium checkbox (default)" size="md" />
+        <UiBaseCheckbox v-if="false" v-model="isChecked2" label="Medium checkbox (default)" size="md" />
 
-        <UiBaseCheckbox v-model="isChecked3" label="Large checkbox" size="lg" />
+        <UiBaseCheckbox v-if="false" v-model="isChecked3" label="Large checkbox" size="lg" />
 
         <!-- Different label placements -->
-        <UiBaseCheckbox v-model="isChecked4" label="Label on right (default)" labelPlacement="right" />
+        <UiBaseCheckbox v-if="false" v-model="isChecked4" label="Label on right (default)" labelPlacement="right" />
 
-        <UiBaseCheckbox v-model="isChecked5" label="Label on left" labelPlacement="left" />
+        <UiBaseCheckbox v-if="false" v-model="isChecked5" label="Label on left" labelPlacement="left" />
 
-        <UiBaseCheckbox v-model="isChecked6" label="Label on top" labelPlacement="top" />
+        <UiBaseCheckbox v-if="false" v-model="isChecked6" label="Label on top" labelPlacement="top" />
 
-        <UiBaseCheckbox v-model="isChecked7" label="Label on bottom" labelPlacement="bottom" />
+        <UiBaseCheckbox v-if="false" v-model="isChecked7" label="Label on bottom" labelPlacement="bottom" />
 
-        <div class="space-y-4">
+        <div v-if="false" class="space-y-4">
             <!-- Basic radio group -->
             <div class="space-y-2">
                 <UiBaseRadio v-model="selectedOption" name="options" value="option1" label="Option 1" />
@@ -175,7 +163,7 @@ const handleColorRemoved = (colorId: string) => {
             />
         </div>
 
-        <div class="space-y-4">
+        <div v-if="false" class="space-y-4">
             <!-- Basic usage -->
             <UiBasePillCheckbox v-model="isSelected" label="label text" />
 
@@ -183,7 +171,7 @@ const handleColorRemoved = (colorId: string) => {
             <UiBasePillCheckbox v-model="isDisabled" label="Disabled option" disabled />
         </div>
 
-        <div class="space-y-2">
+        <div v-if="false" class="space-y-2">
             <!-- Basic radio group -->
             <UiBasePillRadio v-model="selectedOption" name="options" value="option1" label="Option 1" />
             <UiBasePillRadio v-model="selectedOption" name="options" value="option2" label="Option 2" />
@@ -193,7 +181,7 @@ const handleColorRemoved = (colorId: string) => {
             <UiBasePillRadio v-model="selectedOption" name="options" value="option4" label="Disabled option" disabled />
         </div>
 
-        <div class="container mx-auto p-4">
+        <div v-if="false" class="container mx-auto p-4">
             <div class="p-4">
                 <UiColorPicker v-model="selectedColor" />
                 <div v-if="selectedColor" class="mt-4" :style="{ color: selectedColor }">

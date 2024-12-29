@@ -2,14 +2,36 @@
 import { QuestionType, type ChoiceQuestion, type DropdownOption, type Question } from '~/types/survey';
 import { ArrowRight } from 'lucide-vue-next';
 
-const { survey, setSurvey, setActiveQuestion, activeQuestion } = useGlobal();
+const { survey, setSurvey, setActiveQuestion, activeQuestion, updateCurrentIndex } = useGlobal();
 
 // Refs
 const questions = ref<Question[]>(
-    survey.value?.questions ? survey.value?.questions : [INITIAL_QUESTIONS.reaction, INITIAL_QUESTIONS.thank_you]
+    survey.value?.questions
+        ? addQuestionNumbers(survey.value?.questions)
+        : addQuestionNumbers([INITIAL_QUESTIONS.reaction, INITIAL_QUESTIONS.thank_you])
 );
 const questionsContainer = ref<HTMLElement | null>(null);
 const lastAddedQuestion = ref<Element | ComponentPublicInstance | null>(null);
+
+// Function to add/update question numbers
+function addQuestionNumbers(questions: Question[]): Question[] {
+    return questions.map((question, index) => ({
+        ...question,
+        questionNo: index + 1,
+
+        // questionNo: question.type !== QuestionType.THANK_YOU ? index + 1 : undefined,
+    }));
+}
+
+// Function to update all question numbers
+function updateQuestionNumbers() {
+    questions.value = questions.value.map((question, index) => ({
+        ...question,
+        questionNo: index + 1,
+
+        // questionNo: question.type !== QuestionType.THANK_YOU ? index + 1 : undefined,
+    }));
+}
 
 // Utility functions
 const scrollToElement = (element: Element) => {
@@ -26,9 +48,9 @@ const updateLogicOptions = () => {
     const getQuestionOptions = (questionId: string) => {
         const otherQuestions = questionsExceptThankYou
             .filter((q) => q.id !== questionId)
-            .map((q, idx) => ({
+            .map((q) => ({
                 id: q.id,
-                label: `Question ${idx + 1}: ${q.title}`,
+                label: `Question ${q.questionNo}: ${q.title}`,
             }));
 
         return [...otherQuestions, { id: 'next', label: 'Next question' }];
@@ -48,17 +70,17 @@ const updateLogicOptions = () => {
 
 // Question management
 const addQuestion = () => {
-    // Create a new question using the REACTION template as default
     const newQuestion = JSON.parse(
         JSON.stringify({
             ...INITIAL_QUESTIONS[QuestionType.REACTION],
-            id: crypto.randomUUID(), // Ensure unique ID
-            type: QuestionType.REACTION, // Explicitly set the type
+            id: crypto.randomUUID(),
+            type: QuestionType.REACTION,
         })
     );
 
     const insertIndex = Math.max(0, questions.value.length - 1);
     questions.value.splice(insertIndex, 0, newQuestion);
+    updateQuestionNumbers();
     updateLogicOptions();
 
     nextTick(() => {
@@ -70,6 +92,7 @@ const addQuestion = () => {
 
 const deleteQuestion = (index: number) => {
     questions.value.splice(index, 1);
+    updateQuestionNumbers();
     updateLogicOptions();
 };
 
@@ -101,23 +124,20 @@ const handleChange = (option: DropdownOption | null, index: number) => {
         return;
     }
 
-    // Create new question from template with unique ID
     const newQuestion = {
         ...template,
         id: crypto.randomUUID(),
     };
 
-    // Check if this is the last question
     const isLastQuestion = index === questions.value.length - 1;
-
-    // If it's the last question, insert before it; otherwise, insert after
     const insertIndex = isLastQuestion ? index : index + 1;
     questions.value.splice(insertIndex, 0, newQuestion);
+    updateQuestionNumbers();
     updateLogicOptions();
 
     nextTick(() => {
         const elements = document.querySelectorAll('[data-question]');
-        const targetElement = elements[insertIndex]; // Get the newly added question's element
+        const targetElement = elements[insertIndex];
         if (targetElement) scrollToElement(targetElement);
     });
 };
@@ -134,15 +154,14 @@ const handleReplace = (option: DropdownOption | null, index: number) => {
         return;
     }
 
-    // Replace existing question with new template while preserving the ID
     const existingId = questions.value[index].id;
 
-    // Create a fresh question object from the template
     questions.value[index] = JSON.parse(
         JSON.stringify({
             ...template,
             id: existingId,
-            type: questionType, // Explicitly set the type
+            type: questionType,
+            questionNo: questions.value[index].questionNo,
         })
     );
 
@@ -151,6 +170,7 @@ const handleReplace = (option: DropdownOption | null, index: number) => {
 
 // Lifecycle hooks
 onMounted(() => {
+    updateQuestionNumbers();
     updateLogicOptions();
 });
 
@@ -161,7 +181,6 @@ watch(
             const rawQuestions = JSON.parse(JSON.stringify(toRaw(questions))) as Question[];
             setSurvey({ questions: rawQuestions });
 
-            // Find the current active question in the new questions array
             const updatedActiveQuestion = rawQuestions.find((q) => q.id === activeQuestion?.value?.id);
             if (updatedActiveQuestion) {
                 setActiveQuestion(updatedActiveQuestion);
@@ -196,7 +215,9 @@ watch(
             </div>
         </TransitionGroup>
 
-        <UiBaseButton size="md" class="w-max self-end mb-4"> Next <ArrowRight /> </UiBaseButton>
+        <UiBaseButton size="md" class="w-max self-end mb-4" @click="updateCurrentIndex(3)">
+            Next <ArrowRight />
+        </UiBaseButton>
     </div>
 </template>
 

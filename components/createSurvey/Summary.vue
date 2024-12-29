@@ -1,6 +1,5 @@
-# components/Survey.vue
 <script setup lang="ts">
-import { Monitor, FileText, Users, Globe, ArrowRight } from 'lucide-vue-next';
+import { Monitor, FileText, Users, Globe } from 'lucide-vue-next';
 
 interface Targeting {
     devices: string[];
@@ -9,7 +8,7 @@ interface Targeting {
     traffic: string;
 }
 
-const { survey, setActiveQuestion } = useGlobal();
+const { survey, setActiveQuestion, updateCurrentIndex } = useGlobal();
 const { getIconForType } = useQuestionIcons();
 
 const status = ref<'inactive' | 'active'>('inactive');
@@ -21,7 +20,9 @@ const targeting = ref<Targeting>({
 });
 
 const handleCreateSurvey = () => {
-    // Handle survey creation
+    // save the current one and
+
+    updateCurrentIndex(0);
 };
 </script>
 
@@ -73,7 +74,9 @@ const handleCreateSurvey = () => {
                         <span>Shows to {{ targeting.traffic }}</span>
                     </div>
 
-                    <UiBaseButton variant="outline"> Edit targeting settings </UiBaseButton>
+                    <UiBaseButton variant="outline" @click="updateCurrentIndex(4)">
+                        Edit targeting settings
+                    </UiBaseButton>
                 </div>
             </div>
 
@@ -103,6 +106,6 @@ const handleCreateSurvey = () => {
             <!-- Create Button -->
             <UiBaseButton class="w-max" @click="handleCreateSurvey"> Create survey </UiBaseButton>
         </div>
-        <UiBaseButton size="md" class="w-max self-end mb-4"> Next <ArrowRight /> </UiBaseButton>
+        <UiBaseButton size="md" class="w-max self-end mb-4"> Done </UiBaseButton>
     </div>
 </template>

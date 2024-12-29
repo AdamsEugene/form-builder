@@ -261,7 +261,7 @@ const handleClick = () => {
                         :key="i"
                         variant="secondary"
                         :size="question?.type === QuestionType.RATING_5 ? 'xl' : 'md'"
-                        >{{ i }}</UiBaseButton
+                        >{{ (question?.type === QuestionType.RATING_5 ? 5 : 7) + 1 - i }}</UiBaseButton
                     >
                 </div>
             </div>

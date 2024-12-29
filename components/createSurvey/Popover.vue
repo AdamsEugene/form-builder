@@ -12,7 +12,7 @@ interface SurveyType {
     badge?: string;
 }
 
-const { survey, setSurvey, setPosition } = useGlobal();
+const { survey, setSurvey, setPosition, updateCurrentIndex } = useGlobal();
 
 const selectedType = ref(survey.value?.type);
 
@@ -81,6 +81,7 @@ watch(
                 <button
                     v-for="type in surveyTypes"
                     :key="type.id"
+                    @mouseenter="handleTypeSelect(type.id)"
                     @click="handleTypeSelect(type.id)"
                     :class="[
                         'relative p-4 rounded-2xl border-2 text-left transition-all duration-200',
@@ -125,6 +126,6 @@ watch(
                 </button>
             </div>
         </div>
-        <BaseButton size="md" class="w-max self-end">Next <ArrowRight /></BaseButton>
+        <BaseButton size="md" class="w-max self-end" @click="updateCurrentIndex(2)">Next <ArrowRight /></BaseButton>
     </div>
 </template>

@@ -21,7 +21,7 @@ const props = withDefaults(defineProps<Props>(), {
     }),
 });
 
-const { updateSurveySettings, surveySettings } = useGlobal();
+const { updateSurveySettings, surveySettings, updateCurrentIndex } = useGlobal();
 
 // Create a fresh reactive copy to avoid circular references
 const settings = ref<Targeting>({
@@ -195,6 +195,8 @@ watch(
                 </div>
             </div>
         </div>
-        <UiBaseButton size="md" class="w-max self-end mb-4"> Next <ArrowRight /> </UiBaseButton>
+        <UiBaseButton size="md" class="w-max self-end mb-4" @click="updateCurrentIndex(5)">
+            Next <ArrowRight />
+        </UiBaseButton>
     </div>
 </template>

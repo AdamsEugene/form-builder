@@ -7,7 +7,7 @@ import type { BorderRadius, Padding, Placement } from '~/types';
 import { placementConfigs } from '~/constants/placement';
 import { QuestionType } from '~/types/survey';
 
-const { colors, setColors, survey, position, setPosition, activeQuestion } = useGlobal();
+const { colors, setColors, survey, position, setPosition, activeQuestion, updateCurrentIndex } = useGlobal();
 
 // Initialize with refs
 const backgroundColor = ref('');
@@ -201,10 +201,6 @@ const previewPadding = computed(() => {
             return '16px';
     }
 });
-
-const handleNext = () => {
-    // Add your navigation logic here
-};
 </script>
 
 <template>
@@ -310,7 +306,7 @@ const handleNext = () => {
         </div>
 
         <div class="flex justify-end w-full">
-            <UiBaseButton size="md" class="flex items-center gap-2" @click="handleNext">
+            <UiBaseButton size="md" class="flex items-center gap-2" @click="updateCurrentIndex(4)">
                 Next
                 <ArrowRight class="w-4 h-4" />
             </UiBaseButton>
