@@ -172,3 +172,8 @@ export interface Color {
 
 export type BorderRadius = 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full' | 'custom';
 export type Padding = 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'custom';
+
+export interface TemplateData {
+    surveyData: Survey | null;
+    colors: ColorSettings;
+}
